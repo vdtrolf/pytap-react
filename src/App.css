@@ -1,0 +1,787 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+.App {
+  margin: 0;
+  background-color: black;
+  font-family: Helvetica;
+  text-align: center;
+}
+
+.WorkArea {
+  margin: 0px 0px;
+  padding: 16px 16px;
+  width : 576 px;
+  display: grid;
+  grid-template-columns: 576px;
+  grid-template-rows: 576px;
+  background-image: url("./images/TTP-back-800.png");
+  background-size : auto;
+  background-repeat: no-repeat;
+}
+
+.FooterArea {
+  margin: 0px 0px;
+  padding: 16px 16px;
+  width : 576 px;
+  display: grid;
+  grid-template-columns: 576px;
+  grid-template-rows: 144px;
+  background-size : auto;
+  background-repeat: no-repeat;
+}
+
+.WaveArea {
+  width : 576 px;
+  height : 576 px;
+  z-index: 10; /* Stay on top */
+  padding: 0px 0;
+  transition: 0.5s; /* 0.5 second transition effect to slide in the sidebar */
+}
+
+.GridArea48 {
+  position: absolute;
+  /* Stay on top */
+  left: 16px;
+  top: 64px;
+  padding: 0px 0px;
+  display: grid;
+  grid-template-columns: 48px 48px 48px 48px 48px 48px 48px 48px 48px 48px 48px 48px;
+  grid-template-rows: 48px 48px 48px 48px 48px 48px 48px 48px 48px 48px 48px 48px;
+}
+
+.GridArea64 {
+  position: absolute;
+  /* Stay on top */
+  left: 16px;
+  top: 64px;
+  padding: 0px 0px;
+  display: grid;
+  grid-template-columns: 64px 64px 64px 64px 64px 64px 64px 64px 64px;
+  grid-template-rows: 64px 64px 64px 64px 64px 64px 64px 64px 64px;
+}
+
+.GridArea96 {
+  position: absolute;
+  /* Stay on top */
+  left: 16px;
+  top: 64px;
+  padding: 0px 0px;
+  display: grid;
+  grid-template-columns: 96px 96px 96px 96px 96px 96px;
+  grid-template-rows: 96px 96px 96px 96px 96px 96px;
+}
+
+.FreeArea {
+  position: absolute;
+  /* Stay on top */
+  left: 16px;
+  top: 64px;
+  padding: 64px 64px;
+  width: 640px;
+  height: 640px;
+}
+
+.FishArea {
+  position: absolute;
+  /* Stay on top */
+  left: 16px;
+  top: 64px;
+  padding: 64px 64px;
+  width: 640px;
+  height: 640px;
+}
+
+.GarbageArea {
+  position: absolute;
+  /* Stay on top */
+  left: 16px;
+  top: 64px;
+  padding: 64px 64px;
+  width: 640px;
+  height: 640px;
+}
+
+.GemArea {
+  position: absolute;
+  /* Stay on top */
+  left: 16px;
+  top: 64px;
+  padding: 64px 64px;
+  width: 640px;
+  height: 640px;
+}
+
+.NameArea {
+  width: 150px;
+  height: 64px;
+  display: grid;
+  grid-template-columns: 150px;
+  grid-template-rows: 24px 46px;
+}
+
+.Penguin {
+  position: absolute;
+}
+
+.Fish {
+  position: absolute;
+}
+
+.Garbage {
+  position: absolute;
+}
+
+.Gem {
+  position: absolute;
+}
+
+.Tile {
+  left: 0px;
+  top: 0px;
+  width : 64 px;
+  height : 64 px;
+  z-index: 20; /* Stay on top */
+  padding: 0px 0;
+}
+
+.WeatherArea {
+  position: absolute;
+  left: 16px;
+  top: 64px;
+  width : 576 px;
+  height : 576 px;
+  z-index: 60; /* Stay on top */
+  padding: 0px 0;
+  opacity: 0;
+  transition: 0.5s; /* 0.5 second transition effect to slide in the sidebar */
+  pointer-events: none;
+  background-image: none;
+}
+
+.StateArea {
+  position: absolute;
+  left: 16px;
+  top: 64px;
+  width : 576 px;
+  height : 576 px;
+  z-index: 65; /* Stay on top */
+  padding: 0px 0;
+  transition: 0.5s; /* 0.5 second transition effect to slide in the sidebar */
+}
+
+.sun {
+  background-image: url("./images/foreground-sun.png");
+}
+.cold {
+  background-image: url("./images/weather-cold.png");
+}
+.rain {
+  background-image: url("./images/weather-rain.png");
+}
+.snow {
+  background-image: url("./images/foreground-snow.png");
+}
+
+
+.Navbar {
+  width: 608px;
+  height: 48px;
+  align-items: left;
+  background-color: black;
+  background-image: url("./images/PF-back.png");
+  background-repeat: repeat-x;
+  display: grid;
+  grid-template-columns: 180px 170px 55px 170px;
+}
+
+.NavbarInfo {
+  width: 150px;
+  height: 64px;
+  align-items: left;
+  padding: 1px 1px;
+  font-size: 12px;
+  display: grid;
+  grid-template-columns: auto;
+  grid-template-rows: 24px 24px;
+}
+
+.NavbarInfoLine {
+  display: grid;
+  grid-template-columns: 26px 26px 26px 26px 26px 26px;
+  grid-template-rows: auto ;
+}
+
+.NavbarTemp {
+  width: 80px;
+  height: 64px;
+  align-items: left;
+  padding: 3px 1px;
+  font-family: Helvetica;
+  font-weight: bold;
+  font-size: 16px;
+  display: grid;
+  grid-template-columns: 90px;
+  grid-template-rows: 24px 24px;
+}
+
+.NavbarTempLine {
+  color: #fefdaf;
+  display: grid;
+  grid-template-columns: 26px 54px;
+  grid-template-rows: auto ;
+}
+
+.login {
+  align-items: left;
+  text-align:left;
+  padding: 5px 18px;
+  font-size: 14px;
+  display: grid;
+  grid-template-columns: 180px;
+  grid-template-rows: auto;
+}
+
+.startup {
+  align-items: left;
+  text-align:left;
+  padding: 64px 64px;
+  font-size: 16px;
+  display: grid;
+  color: #fefdaf;
+  grid-template-columns: 200px;
+  grid-template-rows: 40px 10px 30px 36px 10px 30px 36px 10px 40px 60px 60px;
+  background-image: url("./images/TTP_Startup_bg.png");
+}
+
+input {
+  color: #dfeed0;
+  background-color: rgb(41, 78, 107); 
+  margin: 5px 0;
+  border:0; 
+  border-bottom:1px solid rgb(125, 125, 125); 
+  width:80%;
+}
+
+input[type="checkbox"] {
+  position: relative;
+  width: 12px;
+  height: 12px;
+  color: rgb(41, 78, 107); 
+  border: 1px solid rgb(125, 125, 125); ;
+  border-radius: 4px;
+  appearance: none;
+  outline: 0;
+  cursor: pointer;
+}
+
+input[type="checkbox"]:checked {
+  position: relative;
+  width: 12px;
+  height: 12px;
+  color: rgb(198, 228, 250); 
+  border: 4px solid rgb(210, 210, 210); ;
+  border-radius: 4px;
+  appearance: none;
+  outline: 0;
+  cursor: pointer;
+}
+
+select {
+  color: #dfeed0;
+  background-color: rgb(41, 78, 107); 
+  margin: 5px 0;
+  border:1px solid rgb(125, 125, 125); 
+  width:80%;
+}
+
+input.hover {
+  color: #dfeed0;
+}
+
+label {
+  font-weight: bold;
+  padding: 5px 0;
+}
+
+.inputButtonsBar {
+  align-items: right;
+  display: grid;
+  grid-template-columns: 80px 80px;
+  grid-template-rows: auto;
+}
+
+.sidebarButtonsBar {
+  align-items: right;
+  display: grid;
+  grid-template-columns: 18px 80px 80px;
+  grid-template-rows: auto;
+}
+
+
+.inputButton {
+  margin: 4px 3px;
+  color: #dfeed0;
+  font-size: 14px;
+  border-radius: 4px;
+  background-color: rgb(51, 100, 137); 
+  border:2px solid rgb(125, 125, 125); 
+}
+
+.inputButton.hover {
+  font-weight: bold;
+  color: #e7ebe4;
+  background-color: rgb(64, 125, 171); 
+}
+
+.checkmark {
+  top: 0;
+  left: 0;
+  height: 16px;
+  width: 16px;
+  background-color: #eee;
+}
+
+
+.checkboxList {
+  margin: 0px 0px;
+  font-family: Helvetica;
+  font-size: 14px;
+  text-align: left;
+  font-weight: normal;
+  color: rgb(173, 198, 215); 
+  display: grid;
+  grid-template-columns: auto;
+  grid-template-rows: 24px 24px;
+}
+
+.checkboxBar {
+  display: grid;
+  grid-template-columns: 20px 136px;
+  grid-template-rows: auto;
+}
+
+.checkBoxText {
+  padding: 4px 0;
+  color: rgb(175, 199, 216); 
+}
+
+.ui-button {
+  width: 36px;
+  height: 36px;
+  padding: 6px 6px ;
+  border: none;
+  cursor: pointer;
+  overflow: hidden;
+  background-color: Transparent;
+  background-repeat: no-repeat;
+}
+
+.ui-button-large {
+  width: 48px;
+  height: 48px;
+  padding: 3px 3px ;
+  border: none;
+  cursor: pointer;
+  overflow: hidden;
+  background-color: Transparent;
+  background-repeat: no-repeat;
+}
+
+.ButtonStart {
+  background-image: url("./images/TTP-start-36.png");
+}
+
+.ButtonStart:hover {
+  background-image: url("./images/TTP-start-hover-36.png");
+}
+
+.ButtonOnce {
+  background-image: url("./images/TTP-runOnce-36.png");
+}
+
+.ButtonOnce:hover {
+  background-image: url("./images/TTP-runOnce-hover-36.png");
+}
+
+.ButtonStop {
+  background-image: url("./images/TTP-stop-36.png");
+}
+
+.ButtonStop:hover {
+  background-image: url("./images/TTP-stop-hover-36.png");
+}
+
+.ButtonPlus {
+  background-image: url("./images/TTP-plus-36.png");
+}
+
+.ButtonPlus:hover {
+  background-image: url("./images/TTP-plus-hover-36.png");
+}
+
+.ButtonClone {
+  background-image: url("./images/TTP-clone-36.png");
+}
+
+.ButtonClone:hover {
+  background-image: url("./images/TTP-clone-hover-36.png");
+}
+
+.ButtonAdmin {
+  background-image: url("./images/TTP-admin-36.png");
+}
+
+.ButtonAdmin:hover {
+  background-image: url("./images/TTP-admin-hover-36.png");
+}
+
+.ButtonAdminOn {
+  background-image: url("./images/TTP-admin-on-36.png");
+}
+
+.ButtonAdminOn:hover {
+  background-image: url("./images/TTP-admin-hover-36.png");
+}
+
+.ButtonClose {
+  background-image: url("./images/TTP-close-24.png");
+}
+
+.ButtonClose:hover {
+  background-image: url("./images/TTP-close-hover-24.png");
+}
+
+.ButtonFish {
+  background-image: url("./images/TTP-eat-36.png");
+}
+
+.ButtonFish:hover {
+  background-image: url("./images/TTP-eat-36-hover.png");
+}
+
+.ButtonDropFish {
+  background-image: url("./images/TTP-drop-fish-36.png");
+}
+
+.ButtonDropFish:hover {
+  background-image: url("./images/TTP-drop-fish-36-hover.png");
+}
+
+.ButtonSteps {
+  background-image: url("./images/TTP-step-running.gif");
+  width: 36px;
+  height: 36px;
+}
+
+
+.ui-button36 {
+  width: 36px;
+  height: 36px;
+  padding: 12px 6px ;
+  border: none;
+  cursor: pointer;
+  overflow: hidden;
+  background-color: Transparent;
+  background-repeat: no-repeat;
+}
+
+.ButtonSubmit {
+  background-image: url("./images/TTP-submit-36.png");
+}
+
+.ButtonSubmit:hover {
+  background-image: url("./images/TTP-submithover-36.png");
+}
+
+.ButtonArea {
+  margin: 0px 0px;
+  padding: 6px 0px;
+  width : 200 px;
+  display: grid;
+  grid-template-columns: 40px 40px 40px 40px 40px;
+  grid-template-rows: auto;
+}
+
+#islandName {
+  text-align: left;
+  z-index: 50;
+  font-family: Helvetica;
+  font-weight: bold;
+  font-size: 24px;
+  color: #ffffff;
+}
+
+#score {
+  text-align: left;
+  z-index: 50;
+  font-family: Helvetica;
+  font-size: 18px;
+  font-weight: bold;
+  color: #D0CD90;
+}
+
+.Footer {
+  margin: 24px 8px;
+  display: grid;
+  grid-template-columns: 54px 500px;
+  grid-template-rows: 24px 24px 24px 24px 24px 24px 24px;
+}
+
+.FooterText {
+  margin: 2px 0px;
+  font-family: Helvetica;
+  font-size: 16px;
+  font-weight: semi-bold;
+  text-align: left;
+  vertical-align: bottom;
+  color: #dfeed0;
+  display: grid;
+  grid-template-columns: 20px 20px 100px 180px 200px;
+  grid-template-rows: auto;
+}
+
+.FooterText:hover {
+  font-weight: semi-bold;
+  color: #ddba73;
+} 
+
+.FooterTextIlluminated {
+  margin: 2px 0px;
+  font-family: Helvetica;
+  font-size: 16px;
+  font-weight: semi-bold;
+  text-align: left;
+  vertical-align: bottom;
+  color: #ddba73;
+  display: grid;
+  grid-template-columns: 20px 20px 100px 180px 200px;
+  grid-template-rows: auto;
+}
+
+
+.TwoBars {
+  margin: 0px 0px;
+  display: grid;
+  color: #dfeed0;
+  display: grid;
+  vertical-align: bottom;
+  grid-template-columns: 50px;
+  grid-template-rows: 10px 10px;
+}
+
+.PenguinsList {
+  margin: 12px 0px;
+  font-family: Helvetica;
+  font-size: 16px;
+  color: #d0f5a9;
+  display: grid;
+  grid-template-columns: auto;
+  grid-template-rows: 21px 21px 21px 21px 21px 21px 21px 21px 21px 21px 21px;
+}
+
+.Details { 
+  margin: 16px 0px;
+  padding: 0px 8px;
+  display: grid;
+  font-size: 16px;
+  color: #b0cdf9;
+  align-items: left;
+  text-align: left;
+  grid-template-columns: 388px 180px;
+  grid-template-rows: 40px 30px 30px 30px 30px 25px;
+}
+
+.detailsHead {
+  display: grid;
+ 
+  grid-template-rows: 64px;
+  grid-template-columns: 64px 304px 80px 80px ;
+}
+
+.detailsName {
+  font-size: 18px;
+  color: #dde9fa;
+  padding: 32px 8px;
+  bottom: 0;
+  left: 0;
+}
+
+.detailsList {
+  display: grid;
+  grid-template-rows: 24px 24px 24px 24px 24px 24px 24px;
+  grid-template-columns: auto;
+}
+
+.detailsBar {
+  width: 640px;
+  height: 64px;
+  padding: 10px 0px;
+  display: grid;
+  grid-template-rows: auto;
+  grid-template-columns: 188px 180px;
+}
+
+.detailsGridBack {
+  margin: 17px 17px;
+  width: 162px;
+  height: 162px;
+  z-index:0;
+  display: grid;
+  grid-template-rows: 54px 54px 54px;
+  grid-template-columns: 54px 54px 54px;
+
+}
+
+
+
+
+.dirGridLarge {
+  position: absolute;
+  top: 674px;
+  left:432px;
+  z-index:20;
+  display: grid;
+  grid-template-rows: 20px 20px 20px 20px 20px 20px 20px;
+  grid-template-columns: 20px 20px 20px 20px 20px 20px 20px;
+}
+
+
+/* The sidebar menu */
+
+.sidebar {
+  height: 600px; /* 100% Full-height */
+  width: 0px; /* 0 width - change this with JavaScript */
+  position: fixed; /* Stay in place */
+  z-index: 70; /* Stay on top */
+  top: 64px;
+  left: 0;
+  font-size: 20px;
+  color: #b0cdf9;
+  background-color: rgb(41, 78, 107); 
+  border: 0px solid rgb(103, 133, 168);
+  overflow-x: hidden; /* Disable horizontal scroll */
+  transition: 0.5s; /* 0.5 second transition effect to slide in the sidebar */
+  /* background-image: url("./images/lbar-back.png"); */
+  display: grid;
+  grid-template-columns: auto;
+  grid-template-rows: 52px 510px 28px;
+}
+
+.IslandsList {
+  margin: 0px 8px;
+  font-family: Helvetica;
+  font-size: 16px;
+  color: #d0f5a9;
+  text-align: left;
+  display: grid;
+  grid-template-columns: auto;
+  grid-template-rows: 24px 24px 24px 24px 24px 24px 24px 24px 24px 24px 24px 24px;
+}
+
+.island {
+  color: #d0f5a9;
+  display: grid;
+  grid-template-columns: 20px 136px 42px 42px;
+  grid-template-rows: auto;
+}
+
+.deadisland {
+  color: #f3f2f088;
+  display: grid;
+  grid-template-columns: 20px 136px 42px 42px;
+  grid-template-rows: auto;
+}
+
+.island:hover {
+  font-weight: bold;
+  color: #ddba73;
+} 
+
+.garb{
+  width: 16px;
+  height: 16px;
+  background: url("./images/garb.png") no-repeat;
+  display: inline-block;
+}
+.garb:hover {
+  background: url("./images/garbhover.png") no-repeat;
+}
+
+/* The sidebar links */
+.sidebar a {
+  padding: 8px 8px 8px 32px;
+  text-decoration: none;
+  font-size: 20px;
+  color: #dbe3fb;
+  display: block;
+  transition: 0.3s;
+}
+
+/* When you mouse over the navigation links, change their color */
+.sidebar li:hover {
+  font-weight: bold;
+  color: #f1f1f1;
+}
+
+.sideNavbar {
+  width: 238px;
+  height: 64px;
+  padding: 10px 0px;
+  align-items: left;
+  text-align: left;
+  display: grid;
+  grid-template-rows: 50px;
+  grid-template-columns: 16px 200px 34px;
+}
+
+
+
+/* Position and style the close button (top right corner) */
+.sidebar .closebtn {
+  position: absolute;
+  top: 0;
+  right: 25px;
+  font-size: 36px;
+  margin-left: 50px;
+}
+
+
+/* The adminbar menu */
+
+.adminbar {
+  height: 200px; /* 100% Full-height */
+  width: 0px; /* 0 width - change this with JavaScript */
+  position: fixed; /* Stay in place */
+  z-index: 80; /* Stay on top */
+  top: 64px;
+  left: 400px;
+  font-size: 20px;
+  color: #b0cdf9;
+  background-color: rgb(41, 78, 107); 
+  border: 0px solid rgb(103, 133, 168);
+  overflow-x: hidden; /* Disable horizontal scroll */
+  /* background-image: url("./images/rbar-back.png"); */
+}
+
+.adminNavbar {
+  width: 188px;
+  height: 24px;
+  padding: 10px 0px;
+  align-items: left;
+  text-align: left;
+  display: grid;
+  grid-template-rows: 24px;
+  grid-template-columns: 16px 150px 34px;
+}
