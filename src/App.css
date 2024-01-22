@@ -548,7 +548,7 @@ label {
   vertical-align: bottom;
   color: #dfeed0;
   display: grid;
-  grid-template-columns: 20px 20px 100px 180px 200px;
+  grid-template-columns: 20px 20px 20px 100px 180px 200px;
   grid-template-rows: auto;
 }
 

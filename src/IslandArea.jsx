@@ -6,7 +6,7 @@ import Gem from "./Gem.jsx";
 import Penguin from "./Penguin.jsx";
 import Fish from "./Fish.jsx";
 import Garbage from "./Garbage.jsx";
-import waves from "./images/waves-back.png";
+import neutral from "./images/TapTapBackNeutral.png";
 
 import * as constants from "./Constants.jsx";
 
@@ -16,7 +16,7 @@ export default function IslandArea(props) {
   const {runningState, island, onTileClick, showBalloons, illuminatedKey, movedPenguins, tileSize, gridClass, moveSpeed } = props;
   const weather = island.weather;
 
-  const debug = false;
+  const debug = true;
   
   if (debug) {
     console.log("=== Islandarea " + tileSize  + "==========================");
@@ -28,7 +28,7 @@ export default function IslandArea(props) {
     return (
       <>
         <div>
-          <div className="WaveArea" key="div1" ><img src={waves} alt="" /></div>
+          <div className="WaveArea" key="div1" ><img src={neutral} alt="" /></div> 
           <div className={gridClass} key="div2" style={{zIndex:'20'}} >
             {island.tiles && island.tiles.map(tile =><Tile key={tile.key} tileType={tile.type} tileAngle={tile.angle} tileVpos={tile.vpos} tileHpos={tile.hpos} onTileClick={onTileClick} tileSize={tileSize}/>)} 
           </div>

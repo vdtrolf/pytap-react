@@ -3,42 +3,54 @@ import React, {useState,useEffect} from "react";
 import peng_m from "./images/peng-m.png";
 import peng_f from "./images/peng-f.png";
 import peng_y from "./images/peng-y.png";
+import peng_ms from "./images/peng-ms.png";
+import peng_fs from "./images/peng-fs.png";
 import peng_m_old from "./images/peng-m-old.png";
 import peng_f_old from "./images/peng-f-old.png";
 
 import peng_m_ice from "./images/peng-m-ice.png";
 import peng_f_ice from "./images/peng-f-ice.png";
-import peng_y_ice from "./images/peng-y-ice.png";
-import peng_m_old_ice from "./images/peng-m-old-ice.png";
-import peng_f_old_ice from "./images/peng-f-old-ice.png";
+import peng_ms_ice from "./images/peng-ms-ice.png";
+import peng_fs_ice from "./images/peng-fs-ice.png";
 
 import peng_m_fish from "./images/peng-m-fish.png";
 import peng_f_fish from "./images/peng-f-fish.png";
 import peng_y_fish from "./images/peng-y-fish.png";
+import peng_ms_fish from "./images/peng-ms-fish.png";
+import peng_fs_fish from "./images/peng-fs-fish.png";
 import peng_m_old_fish from "./images/peng-m-old-fish.png";
 import peng_f_old_fish from "./images/peng-f-old-fish.png";
 
 import peng_m_ice_fish from "./images/peng-m-ice-fish.png";
 import peng_f_ice_fish from "./images/peng-f-ice-fish.png";
-import peng_y_ice_fish from "./images/peng-y-ice-fish.png";
-import peng_m_old_ice_fish from "./images/peng-m-old-ice-fish.png";
-import peng_f_old_ice_fish from "./images/peng-f-old-ice-fish.png";
+import peng_ms_ice_fish from "./images/peng-ms-ice-fish.png";
+import peng_fs_ice_fish from "./images/peng-fs-ice-fish.png";
 
 import peng_m_demp from "./images/peng-m-demp.png";
 import peng_f_demp from "./images/peng-f-demp.png";
+import peng_ms_demp from "./images/peng-ms-demp.png";
+import peng_fs_demp from "./images/peng-fs-demp.png";
 import peng_y_demp from "./images/peng-y-demp.png";
+import peng_m_old_demp from "./images/peng-m-old-demp.png";
+import peng_f_old_demp from "./images/peng-f-old-demp.png";
 
 import peng_m_demp_ice from "./images/peng-m-demp-ice.png";
 import peng_f_demp_ice from "./images/peng-f-demp-ice.png";
-import peng_y_demp_ice from "./images/peng-y-demp-ice.png";
+import peng_ms_demp_ice from "./images/peng-ms-demp-ice.png";
+import peng_fs_demp_ice from "./images/peng-fs-demp-ice.png";
 
 import peng_m_demp_fish from "./images/peng-m-demp-fish.png";
 import peng_f_demp_fish from "./images/peng-f-demp-fish.png";
+import peng_ms_demp_fish from "./images/peng-ms-demp-fish.png";
+import peng_fs_demp_fish from "./images/peng-fs-demp-fish.png";
 import peng_y_demp_fish from "./images/peng-y-demp-fish.png";
+import peng_m_old_demp_fish from "./images/peng-m-old-demp-fish.png";
+import peng_f_old_demp_fish from "./images/peng-f-old-demp-fish.png";
 
 import peng_m_demp_ice_fish from "./images/peng-m-demp-ice-fish.png";
 import peng_f_demp_ice_fish from "./images/peng-f-demp-ice-fish.png";
-import peng_y_demp_ice_fish from "./images/peng-y-demp-ice-fish.png";
+import peng_ms_demp_ice_fish from "./images/peng-ms-demp-ice-fish.png";
+import peng_fs_demp_ice_fish from "./images/peng-fs-demp-ice-fish.png";
 
 import peng_f_eating from "./images/peng-f-eating.gif";
 import peng_m_eating from "./images/peng-m-eating.gif";
@@ -119,48 +131,90 @@ export default function Penguin(props) {
     const calculateImg = (penguinObj) => {
       let image = peng_m
       if (movedPenguins.includes(penguinObj.key)) {
-        if (penguinObj.hasGem && penguinObj.hasFish) {
-          image = penguinObj.gender ==="m"? peng_m_demp_ice_fish : peng_f_demp_ice_fish;    
-          if (penguinObj.gender ==="y") image =  peng_y_demp_ice_fish;
-        } else if (penguinObj.hasGem) {
-          image = penguinObj.gender ==="m"? peng_m_demp_ice : peng_f_demp_ice;    
-          if (penguinObj.gender ==="y") image =  peng_y_demp_ice;
-        } else if (penguinObj.hasFish) {
-          image = penguinObj.gender ==="m"? peng_m_demp_fish : peng_f_demp_fish;    
-          if (penguinObj.gender ==="y") image =  peng_y_demp_fish;
-        } else {
-          image = penguinObj.gender ==="m"? peng_m_demp : peng_f_demp;    
-          if (penguinObj.gender ==="y") image =  peng_y_demp;
+        if ( penguinObj.isOld) {
+          if (penguinObj.hasFish) {
+            image = penguinObj.gender ==="m"? peng_m_old_demp_fish : peng_f_old_demp_fish;   
+          } else {
+            image = penguinObj.gender ==="m"? peng_m_old_demp : peng_f_old_demp;  
+          } 
+        } else if (penguinObj.isChild) {
+          if (penguinObj.hasFish) {
+            image = peng_y_demp_fish;   
+          } else {
+            image = peng_y_demp;  
+          } 
+        } else { 
+          if (penguinObj.hasShowel) {
+            if (penguinObj.hasGem && penguinObj.hasFish) {
+              image = penguinObj.gender ==="m"? peng_ms_demp_ice_fish : peng_fs_demp_ice_fish;    
+            } else if (penguinObj.hasGem) {
+              image = penguinObj.gender ==="m"? peng_ms_demp_ice : peng_fs_demp_ice;    
+            } else if (penguinObj.hasFish) {
+              image = penguinObj.gender ==="m"? peng_ms_demp_fish : peng_fs_demp_fish;    
+            } else {
+              image = penguinObj.gender ==="m"? peng_ms_demp : peng_fs_demp;    
+            }
+          } else {
+            if (penguinObj.hasGem && penguinObj.hasFish) {
+              image = penguinObj.gender ==="m"? peng_m_demp_ice_fish : peng_f_demp_ice_fish;    
+            } else if (penguinObj.hasGem) {
+              image = penguinObj.gender ==="m"? peng_m_demp_ice : peng_f_demp_ice;    
+            } else if (penguinObj.hasFish) {
+              image = penguinObj.gender ==="m"? peng_m_demp_fish : peng_f_demp_fish;    
+            } else {
+              image = penguinObj.gender ==="m"? peng_m_demp : peng_f_demp;    
+            }
+          }
         }
       } else {
         if (penguinObj.hasGem && penguinObj.hasFish) {
-          if (penguinObj.age < 10) {
-            image = penguinObj.gender ==="m"? peng_m_ice_fish : peng_f_ice_fish;    
+          if ( penguinObj.isOld) {
+            image = penguinObj.gender ==="m"? peng_m_old_fish : peng_f_old_fish;  
+          } else if (penguinObj.isChild)  {
+            image =  peng_y_fish;
           } else {
-            image = penguinObj.gender ==="m"? peng_m_old_ice_fish : peng_f_old_ice_fish;    
-          }
-          if (penguinObj.gender ==="y") image =  peng_y_ice_fish;
+            if (penguinObj.hasShowel) {
+              image = penguinObj.gender ==="m"? peng_ms_ice_fish : peng_fs_ice_fish;  
+            } else {
+              image = penguinObj.gender ==="m"? peng_m_ice_fish : peng_f_ice_fish;    
+            }
+          } 
         } else if (penguinObj.hasGem) {
-          if (penguinObj.age < 10) {
-            image = penguinObj.gender ==="m"? peng_m_ice : peng_f_ice;    
-          } else {
-            image = penguinObj.gender ==="m"? peng_m_old_ice : peng_f_old_ice;    
-          }
-          if (penguinObj.gender ==="y") image =  peng_y_ice;
-        } else if (penguinObj.hasFish) {
-          if (penguinObj.age < 10) {
-            image = penguinObj.gender ==="m"? peng_m_fish : peng_f_fish;   
-          } else { 
-            image = penguinObj.gender ==="m"? peng_m_old_fish : peng_f_old_fish;    
-          }
-          if (penguinObj.gender ==="y") image =  peng_y_fish;
-        } else {
-          if (penguinObj.age < 10) {
-            image = penguinObj.gender ==="m"? peng_m : peng_f;    
-          } else {
+          if ( penguinObj.isOld) {
             image = penguinObj.gender ==="m"? peng_m_old : peng_f_old;  
-          }  
-          if (penguinObj.gender ==="y") image =  peng_y;
+          } else if (penguinObj.isChild)  {
+            image =  peng_y;
+          } else {
+            if (penguinObj.hasShowel) {
+              image = penguinObj.gender ==="m"? peng_ms_ice : peng_fs_ice;  
+            } else {
+              image = penguinObj.gender ==="m"? peng_m_ice : peng_f_ice;    
+            }
+          } 
+        } else if (penguinObj.hasFish) {
+          if ( penguinObj.isOld) {
+            image = penguinObj.gender ==="m"? peng_m_old_fish : peng_f_old_fish;  
+          } else if (penguinObj.isChild)  {
+            image =  peng_y_fish;
+          } else {
+            if (penguinObj.hasShowel) {
+              image = penguinObj.gender ==="m"? peng_ms_fish : peng_fs_fish;  
+            } else {
+              image = penguinObj.gender ==="m"? peng_m_fish : peng_f_fish;    
+            }
+          } 
+        } else {
+          if ( penguinObj.isOld) {
+            image = penguinObj.gender ==="m"? peng_m_old : peng_f_old;  
+          } else if (penguinObj.isChild) {
+            image =  peng_y;
+          } else {
+            if (penguinObj.hasShowel) {
+              image = penguinObj.gender ==="m"? peng_ms : peng_fs;    
+            } else {
+              image = penguinObj.gender ==="m"? peng_m : peng_f;  
+            }
+          }
         }
       }
       return image
@@ -201,14 +255,14 @@ export default function Penguin(props) {
     if (penguinObj.activity === constants.ACTIVITY_MOVING || penguinObj.activity === constants.ACTIVITY_FLEE) {
       if (penguinObj.activityDirection && ! movedPenguins.includes(penguinObj.key)) {
         image = penguinObj.gender ==="m"? moving_m[penguinObj.activityDirection]: moving_f[penguinObj.activityDirection];
-        if (penguinObj.gender ==="y") image = moving_y[penguinObj.activityDirection];
+        if (penguinObj.isChild) image = moving_y[penguinObj.activityDirection];
       }
     } else if (penguinObj.activity === constants.ACTIVITY_EATING) {
       image = penguinObj.gender ==="m"? peng_m_eating: peng_f_eating;
-      if (penguinObj.gender ==="y") image = peng_y_eating;
+      if (penguinObj.isChild) image = peng_y_eating;
     } else if (penguinObj.activity === constants.ACTIVITY_FISHING) {
       image = penguinObj.gender ==="m"? fishing_m[penguinObj.activityDirection]: fishing_f[penguinObj.activityDirection];
-      if (penguinObj.gender ==="y") image = fishing_y[penguinObj.activityDirection];
+      if (penguinObj.isChild) image = fishing_y[penguinObj.activityDirection];
     } else if (penguinObj.activity === constants.ACTIVITY_LOVING) {
       image = peng_loving;;
     } else if (penguinObj.activity === constants.ACTIVITY_GETING || penguinObj.activity === constants.ACTIVITY_CLEANING) {

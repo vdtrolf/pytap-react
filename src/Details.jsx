@@ -7,7 +7,6 @@ import peng_y from "./images/peng-y.png";
 
 import peng_m_ice from "./images/peng-m-ice.png";
 import peng_f_ice from "./images/peng-f-ice.png";
-import peng_y_ice from "./images/peng-y-ice.png";
 
 import peng_m_fish from "./images/peng-m-fish.png";
 import peng_f_fish from "./images/peng-f-fish.png";
@@ -15,7 +14,6 @@ import peng_y_fish from "./images/peng-y-fish.png";
 
 import peng_m_ice_fish from "./images/peng-m-ice-fish.png";
 import peng_f_ice_fish from "./images/peng-f-ice-fish.png";
-import peng_y_ice_fish from "./images/peng-y-ice-fish.png";
 
 import temp_0 from "./images/health-5.png";
 import temp_1 from "./images/health-4.png";
@@ -40,7 +38,7 @@ export default function Details(props) {
   const temp = [temp_0,temp_1,temp_2,temp_3,temp_4,temp_5]
   const shapes = ["","fat","fit","slim","lean"]
   let genderTxt = penguinObj.gender === "m" ? "male":"female"
-  if (penguinObj.gender === "y") genderTxt = "child"
+  if (penguinObj.isChild) genderTxt = "child"
 
   let hungerImg = hunger[Math.floor(penguinObj.hunger/20)]
   let tempImg = temp[Math.floor(penguinObj.temp/20)]
@@ -49,16 +47,14 @@ export default function Details(props) {
   
   if (penguinObj.hasGem && penguinObj.hasFish) {
     image = penguinObj.gender ==="m"? peng_m_ice_fish : peng_f_ice_fish;    
-    if (penguinObj.gender ==="y") image =  peng_y_ice_fish;
   } else if (penguinObj.hasGem) {
     image = penguinObj.gender ==="m"? peng_m_ice : peng_f_ice;    
-    if (penguinObj.gender ==="y") image =  peng_y_ice;
   } else if (penguinObj.hasFish) {
     image = penguinObj.gender ==="m"? peng_m_fish : peng_f_fish;    
-    if (penguinObj.gender ==="y") image =  peng_y_fish;
+    if (penguinObj.isChild) image =  peng_y_fish;
   } else {
     image = penguinObj.gender ==="m"? peng_m : peng_f;    
-    if (penguinObj.gender ==="y") image =  peng_y;
+    if (penguinObj.isChild) image =  peng_y;
   }
 
   const handleEatClick = () => {
@@ -70,7 +66,7 @@ export default function Details(props) {
           <div>
             <div className="detailsHead" >
               <img src={image} width="64px" height="64px" alt="" />
-              <div className="detailsName">{penguinObj.name} ({genderTxt}, {shapes[penguinObj.shape]} - {Math.floor(penguinObj.age)} years old)</div>
+              <div className="detailsName">{penguinObj.name} ({genderTxt}, {shapes[penguinObj.shape]} - {Math.floor(penguinObj.age)} years old) - {penguinObj.canLove}</div>
             </div>  
           
             <div className="detailsList" >

@@ -183,92 +183,96 @@ export default function App() {
       if (apenguin && apenguin.key === selectedKey) {
         setSelectedKey(0);
         setIlluminatedKey(0);
-      } else  {
-        
+      } else   {
+
         const selectedPenguin = island.penguins.find(penguin => penguin.key === selectedKey );
-        const afish = island.fishes.find(fish => fish.vpos === vpos && fish.hpos === hpos);
-        const targetPenguin = island.penguins.find(penguin => penguin.vpos === vpos && penguin.hpos === hpos);
-        const agem = island.gems.find(gem => gem.vpos === vpos && gem.hpos === hpos);
-        const agarbage = island.garbages.find(garbage => garbage.vpos === vpos && garbage.hpos === hpos);
-        const acell = island.tiles.find(tile => tile.vpos === vpos && tile.hpos === hpos);
 
-        // console.log("on " + vpos + "/" + hpos + ", seledcted = " + selectedPenguin.vpos + "/" + selectedPenguin.hpos )
+        if ( selectedPenguin && ! movedPenguins.includes(selectedPenguin.key)) {
 
-        if (selectedPenguin && selectedPenguin.activity == constants.ACTIVITY_NONE &&
-            ((Math.abs(vpos - selectedPenguin.vpos) === 1 && hpos === selectedPenguin.hpos) || 
-            (Math.abs(hpos - selectedPenguin.hpos) === 1 && vpos === selectedPenguin.vpos))) {
+          const afish = island.fishes.find(fish => fish.vpos === vpos && fish.hpos === hpos);
+          const targetPenguin = island.penguins.find(penguin => penguin.vpos === vpos && penguin.hpos === hpos);
+          const agem = island.gems.find(gem => gem.vpos === vpos && gem.hpos === hpos);
+          const agarbage = island.garbages.find(garbage => garbage.vpos === vpos && garbage.hpos === hpos);
+          const acell = island.tiles.find(tile => tile.vpos === vpos && tile.hpos === hpos);
 
-          let command1 = ""
-          let command2 = ""
-          let dir = "D" 
+          // console.log("on " + vpos + "/" + hpos + ", seledcted = " + selectedPenguin.vpos + "/" + selectedPenguin.hpos )
 
-          if (vpos < selectedPenguin.vpos) {
-            dir = "U"
-          } else if (vpos > selectedPenguin.vpos) {
-            dir = "D"
-          } else {
-            if (hpos < selectedPenguin.hpos) {
-              dir = "L"
+          if (selectedPenguin && selectedPenguin.activity == constants.ACTIVITY_NONE &&
+              ((Math.abs(vpos - selectedPenguin.vpos) === 1 && hpos === selectedPenguin.hpos) || 
+              (Math.abs(hpos - selectedPenguin.hpos) === 1 && vpos === selectedPenguin.vpos))) {
+
+            let command1 = ""
+            let command2 = ""
+            let dir = "D" 
+
+            if (vpos < selectedPenguin.vpos) {
+              dir = "U"
+            } else if (vpos > selectedPenguin.vpos) {
+              dir = "D"
             } else {
-              dir = "R"
+              if (hpos < selectedPenguin.hpos) {
+                dir = "L"
+              } else {
+                dir = "R"
+              }
             }
-          }
 
-          if (afish && ! afish.onHook && selectedPenguin.gender !== "y") {
-            command1 = "F"
-            command2 = dir
-            selectedPenguin.goal = constants.ACTIVITY_FISHING
-            selectedPenguin.activityText = "Going to fish"
-            console.log("there is a fish")
-          } else if (agem && ! agem.isTaken && selectedPenguin.gender !== "y") {
-            command1 = "G"
-            command2 = dir
-            selectedPenguin.goal = constants.ACTIVITY_GETING
-            console.log("There is a gem")
-            selectedPenguin.activityText = "Going to grab some ice "
-          } else if (agarbage && ! agarbage.isTaken && selectedPenguin.gender !== "y") {
-            command1 = "C"
-            command2 = dir
-            selectedPenguin.goal = constants.ACTIVITY_CLEANING
-            console.log("There is a garbage")  
-            selectedPenguin.activityText = "Going to clean"  
-          } else if (targetPenguin && selectedPenguin.gender !== "y" && targetPenguin.gender !== selectedPenguin.gender) {
-              command1 = "K"
+            if (afish && ! afish.onHook) {
+              command1 = "F"
               command2 = dir
-              selectedPenguin.goal = constants.ACTIVITY_LOVING
-              selectedPenguin.activityText = "Going to love"
-              console.log("there is a loved once")
-          } else if (acell.type > 0 && ! agem) {
-            command1 = dir.toUpperCase().substring(0,1)  
-            if (command1 === "L") {
-              selectedPenguin.activityDirection =1;
-            } else if (command1 === "R") {
-              selectedPenguin.activityDirection =2;
-            } else if (command1 === "U") {
-              selectedPenguin.activityDirection =3;
-            } else if (command1 === "D") {
-              selectedPenguin.activityDirection =4;
+              selectedPenguin.goal = constants.ACTIVITY_FISHING
+              selectedPenguin.activityText = "Going to fish"
+              console.log("there is a fish")
+            } else if (agem && ! agem.isTaken && ! selectedPenguin.isChild && ! selectedPenguin.isOld) {
+              command1 = "G"
+              command2 = dir
+              selectedPenguin.goal = constants.ACTIVITY_GETING
+              console.log("There is a gem")
+              selectedPenguin.activityText = "Going to grab some ice "
+            } else if (agarbage && ! agarbage.isTaken && selectedPenguin.hasShowel &&! selectedPenguin.isChild && ! selectedPenguin.isOld) {
+              command1 = "C"
+              command2 = dir
+              selectedPenguin.goal = constants.ACTIVITY_CLEANING
+              console.log("There is a garbage")  
+              selectedPenguin.activityText = "Going to clean"  
+            } else if (targetPenguin && targetPenguin.canLove && selectedPenguin.canLove && ! selectedPenguin.isChild && ! targetPenguin.isChild && ! selectedPenguin.isOld && ! targetPenguin.isOld && targetPenguin.gender !== selectedPenguin.gender) {
+                command1 = "K"
+                command2 = dir
+                selectedPenguin.goal = constants.ACTIVITY_LOVING
+                selectedPenguin.activityText = "Going to love"
+                console.log("there is a loved once")
+            } else if (acell.type > 0 && ! agem) {
+              command1 = dir.toUpperCase().substring(0,1)  
+              if (command1 === "L") {
+                selectedPenguin.activityDirection =1;
+              } else if (command1 === "R") {
+                selectedPenguin.activityDirection =2;
+              } else if (command1 === "U") {
+                selectedPenguin.activityDirection =3;
+              } else if (command1 === "D") {
+                selectedPenguin.activityDirection =4;
+              }
+              selectedPenguin.goal = constants.ACTIVITY_MOVING
+              console.log("It's going to " + command1)
+              selectedPenguin.activityText = "Going to move to " + command1
+            } else if (acell.type === 0 && selectedPenguin.hasGem && ! selectedPenguin.isChild && ! selectedPenguin.isOld) {
+              command1 = "B"
+              command2 = dir  
+              selectedPenguin.goal = constants.ACTIVITY_BUILDING
+              console.log("Let's build " + dir)
+              selectedPenguin.activityText = "Going to move"
+            } 
+
+            if (command1 !== "") {
+              setCommand(baseURL.url,island.id,selectedKey,command1,command2)
+              .then((updatedIsland) => setIsland(updatedIsland));
+            }  
+
+          } else {
+            if (targetPenguin && targetPenguin.alive) {
+              setSelectedKey(targetPenguin.key);
+              setIlluminatedKey(targetPenguin.key);
             }
-            selectedPenguin.goal = constants.ACTIVITY_MOVING
-            console.log("It's going to " + command1)
-            selectedPenguin.activityText = "Going to move to " + command1
-          } else if (acell.type === 0 && selectedPenguin.hasGem && selectedPenguin.gender !== "y") {
-            command1 = "B"
-            command2 = dir  
-            selectedPenguin.goal = constants.ACTIVITY_BUILDING
-            console.log("Let's build " + dir)
-            selectedPenguin.activityText = "Going to move"
-          } 
-
-          if (command1 !== "") {
-            setCommand(baseURL.url,island.id,selectedKey,command1,command2)
-            .then((updatedIsland) => setIsland(updatedIsland));
-          }  
-
-        } else {
-          if (targetPenguin && targetPenguin.alive) {
-            setSelectedKey(targetPenguin.key);
-            setIlluminatedKey(targetPenguin.key);
           }
         }
       }
@@ -432,7 +436,11 @@ const extractIslandData = (islandData) => {
     islandData.penguins.forEach(penguin => {
       var gender = penguin.gender==="M"?"m":"f";
       var genderName  = penguin.gender==="M"?"Male":"Female";
-      if (penguin.age < 3 ) gender = "y";
+      var canLove = penguin.canLove;
+      if (penguin.isChild ) {
+        gender = "y";
+        canLove = false;
+      } 
       var activity = penguin.activity;
 
       penguins.push({key: penguin.key, 
@@ -448,17 +456,21 @@ const extractIslandData = (islandData) => {
                     temp:penguin.temp, 
                     shape:penguin.figure, 
                     age:penguin.age, 
+                    isChild : penguin.isChild,
+                    isOld: penguin.isOld,
                     genderName:genderName, 
                     activityDirection:penguin.activityDirection, 
                     activityText:penguin.activityText, 
                     goal:penguin.goal,
                     vision: 2,
                     targetDirections: penguin.activityTarget,
-                    targetvpos: 0, // penguin.activityVMove,
-                    targetHPos: 0, // penguin.activityHMove,
+                    targetvpos: 0, 
+                    targetHPos: 0, 
                     path:"",
-                    // activityDone: penguin.activityDone,
-                    inLove:penguin.inLove})
+                    canLove:canLove,
+                    inLove:penguin.inLove,
+                    hasShowel:penguin.hasShowel
+                  })
     }); 
 
     if (islandData.fishes) { 
@@ -468,7 +480,8 @@ const extractIslandData = (islandData) => {
                     hpos:fish.hpos, 
                     onHook:fish.onHook, 
                     staying:false,
-                    direction:fish.direction})
+                    direction:fish.direction,
+                    lastDirection:fish.lastDirection})
       }); 
     }
 
@@ -478,7 +491,8 @@ const extractIslandData = (islandData) => {
                     vpos:gem.vpos, 
                     hpos:gem.hpos, 
                     age:gem.age,
-                    isTaken:gem.isTaken})
+                    isTaken:gem.isTaken,
+                    hasShowel:gem.hasShowel})
       }); 
     }
 

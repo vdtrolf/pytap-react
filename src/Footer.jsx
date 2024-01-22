@@ -15,6 +15,7 @@ import ice from "./images/ice-block-4.png"
 import fish from "./images/fish.png"
 import empty from "./images/empty.png"
 import cross from "./images/cross.png"
+import love from "./images/love.png"
 
 export default function Footer(props) {
 
@@ -38,8 +39,9 @@ export default function Footer(props) {
         return <>
           <div key={penguin.key + 2000000} className="TwoBars"><img src={hungerImg} width="50px" height="10px" alt="" /><img src={tempImg} width="50px" height="10px" alt=""/></div>
           <div key={penguin.key + 1000000} className={penguin.key===illuminatedKey?"FooterTextIlluminated":"FooterText"} > 
-            <img src={penguin.hasFish?fish:empty} with="24px" height="24px" alt="" />
-            <img src={penguin.hasGem?ice:empty} with="24px" height="24px" alt="" />
+            <img src={penguin.hasFish?fish:empty} with="20px" height="20px" alt="" />
+            <img src={penguin.hasGem?ice:empty} with="20px" height="20px" alt="" />
+            <img src={penguin.canLove?love:empty} with="20px" height="20px" alt="" />
             <div onMouseEnter={() => handleMouseEnter(penguin.key)} onClick={() => onPenguinClick(penguin.key)} onMouseLeave={onPenguinLeave} >{penguin.name}</div>
             <div>({penguin.genderName} / {Math.floor(penguin.age)}y / {shapes[penguin.shape]})</div>
             <div>{penguin.activityText}</div>
@@ -49,8 +51,9 @@ export default function Footer(props) {
         return <>
           <div key={penguin.key + 2000000} className="TwoBars"><img src={hungerImg} width="50px" height="10px" alt="" /><img src={tempImg} width="50px" height="10px" alt=""/></div>
           <div key={penguin.key + 1000000} className={"FooterText"} >
-            <img src={cross} with="24px" height="24px" alt="" />
-            <img src={empty} with="24px" height="24px" alt="" />
+            <img src={cross} with="20px" height="20px" alt="" />
+            <img src={empty} with="20px" height="20px" alt="" />
+            <img src={empty} with="20px" height="20px" alt="" />
             <div onMouseEnter={() => handleMouseEnter(penguin.key)} onMouseLeave={onPenguinLeave}>{penguin.name}</div>
             <div>({penguin.genderName} / {Math.floor(penguin.age)}y / {shapes[penguin.shape]})</div>
             <div>{penguin.activityText}</div>
