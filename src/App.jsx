@@ -25,7 +25,7 @@ export default function App() {
   const [admin,setAdmin] = useState(false);
   const [showBalloons,setShowBalloons] = useState(false);
   const [island,setIsland] = useState({});
-  const [baseURL,setBaseURL] = useState({name:"local", url:"http://127.0.0.1:5000/"});
+  const [baseURL,setBaseURL] = useState({name:"pytap", url:"http://85.215.204.50/pytap"});
   const [illuminatedKey,setIlluminatedKey] = useState(0);
   const [selectedKey,setSelectedKey] = useState(0);
   const [boardSize,setBoardSize] = useState(9)
