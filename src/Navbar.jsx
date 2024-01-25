@@ -33,7 +33,7 @@ export default function Navbar(props) {
       <div className="NavbarInfo" >
          {island.name && <div className="NameArea" key="div7" style={{zIndex:'50', pointerEvents:'none'}}>
             <div id="islandName">{island.name}</div>
-            <div id="score">{month} {Math.round(island.year)}</div>
+            <div id="score">{month}.{Math.round(island.year)}</div>
           </div>}
       </div>
       {runningState !== constants.NOT_STARTED && <div className="NavbarTemp" >
