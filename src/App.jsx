@@ -17,7 +17,8 @@ export default function App() {
 
   const urls= [{name:"aws",url:"https://ayv5bav97c.execute-api.us-east-1.amazonaws.com/Prod/"},
   {name:"pytap", url:"http://85.215.204.50/pytap"},
-  {name:"local", url:"http://127.0.0.1:5000/"}];
+  {name:"local", url:"http://127.0.0.1:5000/"},
+  {name:"typtap", url:"http://localhost:8081/typtap/"}]
 
   const [sidebar,setSidebar] = useState(false);
   const [adminbar,setAdminbar] = useState(false);
@@ -25,7 +26,7 @@ export default function App() {
   const [admin,setAdmin] = useState(false);
   const [showBalloons,setShowBalloons] = useState(false);
   const [island,setIsland] = useState({});
-  const [baseURL,setBaseURL] = useState({name:"pytap", url:"http://85.215.204.50/pytap"});
+  const [baseURL,setBaseURL] = useState({name:"typtap", url:"http://localhost:8081/typtap/"});
   const [illuminatedKey,setIlluminatedKey] = useState(0);
   const [selectedKey,setSelectedKey] = useState(0);
   const [boardSize,setBoardSize] = useState(9)
@@ -77,7 +78,7 @@ export default function App() {
       clearInterval(intervalId);
       }
 
-  },[runningState,island,baseURL]);
+  },[runningState,island,baseURL,renewSpeed,selectedKey]);
 
   const handleCreateButton = (size,difficulty) => {
 
@@ -197,7 +198,7 @@ export default function App() {
 
           // console.log("on " + vpos + "/" + hpos + ", seledcted = " + selectedPenguin.vpos + "/" + selectedPenguin.hpos )
 
-          if (selectedPenguin && selectedPenguin.activity == constants.ACTIVITY_NONE &&
+          if (selectedPenguin && selectedPenguin.activity === constants.ACTIVITY_NONE &&
               ((Math.abs(vpos - selectedPenguin.vpos) === 1 && hpos === selectedPenguin.hpos) || 
               (Math.abs(hpos - selectedPenguin.hpos) === 1 && vpos === selectedPenguin.vpos))) {
 
@@ -406,15 +407,19 @@ const setCommand = async (baseURL,islandId,penguinId,command1,command2) => {
 const refreshIslandsList = async (baseURL,islandToDelete=0)  => {
   if (islandToDelete > 0) {
     const islandsListData = await convert(baseURL + "deleteIsland?islandId=" + islandToDelete );
-    return islandsListData.islands;
+    return islandsListData;
   } else {
     const islandsListData = await convert(baseURL + "islands" );
-    return islandsListData.islands;
+    
+    return islandsListData;
   }
 }
 
 const extractIslandData = (islandData) => {
 
+  console.dir(islandData)
+  
+  
   const tiles = [];
   const artifacts = [];
   const penguins = [];
@@ -425,53 +430,55 @@ const extractIslandData = (islandData) => {
 
   if (islandData) {
 
-    islandData.cells.forEach(cell => {
-      tiles.push({key: cell.key, 
-                type: cell.cellType, 
-                angle: cell.angle, 
-                vpos: cell.vpos, 
-                hpos: cell.hpos})
-    }); 
+    islandData.cells.forEach(cellsline => {
+      cellsline.forEach(cell => {   
+        tiles.push({key: cell.id, 
+                  type: cell.type, 
+                  angle: cell.angle, 
+                  vpos: cell.vpos, 
+                  hpos: cell.hpos})
+  
+      }); 
+    });
+ 
+    if (islandData.penguins) {
 
-    islandData.penguins.forEach(penguin => {
-      var gender = penguin.gender==="M"?"m":"f";
-      var genderName  = penguin.gender==="M"?"Male":"Female";
-      var canLove = penguin.canLove;
-      if (penguin.isChild ) {
-        gender = "y";
-        canLove = false;
-      } 
-      var activity = penguin.activity;
+      islandData.penguins.forEach(penguin => {
+        var gender = penguin.gender==="M"?"m":"f";
+        var genderName  = penguin.gender==="M"?"Male":"Female";
+        var canLove = penguin.canLove;
+        if (penguin.isChild ) {
+          gender = "y";
+          canLove = false;
+        } 
+        var activity = penguin.activity;
 
-      penguins.push({key: penguin.key, 
-                    alive:penguin.alive, 
-                    name:penguin.name, 
-                    vpos:penguin.vpos, 
-                    hpos:penguin.hpos, 
-                    hasGem:penguin.hasGem, 
-                    hasFish:penguin.hasFish,
-                    gender: gender, 
-                    activity: activity, 
-                    hunger:penguin.hunger, 
-                    temp:penguin.temp, 
-                    shape:penguin.figure, 
-                    age:penguin.age, 
-                    isChild : penguin.isChild,
-                    isOld: penguin.isOld,
-                    genderName:genderName, 
-                    activityDirection:penguin.activityDirection, 
-                    activityText:penguin.activityText, 
-                    goal:penguin.goal,
-                    vision: 2,
-                    targetDirections: penguin.activityTarget,
-                    targetvpos: 0, 
-                    targetHPos: 0, 
-                    path:"",
-                    canLove:canLove,
-                    inLove:penguin.inLove,
-                    hasShowel:penguin.hasShowel
-                  })
-    }); 
+        penguins.push({key: penguin.key, 
+                      alive:penguin.alive, 
+                      name:penguin.name, 
+                      vpos:penguin.vpos, 
+                      hpos:penguin.hpos, 
+                      hasGem:penguin.hasGem, 
+                      hasFish:penguin.hasFish,
+                      gender: gender, 
+                      activity: activity, 
+                      hunger:penguin.hunger, 
+                      temp:penguin.temp, 
+                      shape:penguin.shape, 
+                      age:penguin.age, 
+                      isChild : penguin.isChild,
+                      isOld: penguin.isOld,
+                      genderName:genderName, 
+                      activityDirection:penguin.activityDirection, 
+                      activityText:penguin.activityText, 
+                      goal:penguin.goal,
+                      vision: 2,
+                      canLove:canLove,
+                      inLove:penguin.inLove,
+                      hasShowel:penguin.hasShowel
+                    })
+      }); 
+    }
 
     if (islandData.fishes) { 
       islandData.fishes.forEach(fish => {
@@ -482,7 +489,7 @@ const extractIslandData = (islandData) => {
                     staying:false,
                     direction:fish.direction,
                     lastDirection:fish.lastDirection})
-      }); 
+      });
     }
 
     if (islandData.gems) { 
@@ -506,14 +513,15 @@ const extractIslandData = (islandData) => {
     }
 
     if (islandData.islands) { 
-      islandData.islands.forEach(anisland => {
-        islands.push({key: anisland.id,
-                      id: anisland.id, 
-                      name: anisland.name,
-                      year: anisland.year,
-                      size: anisland.size})
+      for (const thisIsland in islandData.islands) {
+        let anIsland = islandData.islands[thisIsland]
+        islands.push({key: anIsland.key,
+                      id: anIsland.id, 
+                      name: anIsland.name,
+                      year: anIsland.year,
+                      size: anIsland.size})
                 
-      }); 
+      }; 
     } 
 
     return {id: islandData.id,
