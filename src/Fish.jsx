@@ -11,7 +11,7 @@ import fish_4_moving from "./images/fish-4-moving.gif";
 const Fish = (props) => {
 
     const [fish,setFish] = useState({});  
-    const {fishObj,tileSize,moveSpeed} = props;
+    const {fishVpos, fishHpos, fishDirection, fishLastDirection, fishOnHook, tileSize,moveSpeed} = props;
 
     const sleep = (ms) => {
         return new Promise(resolve => setTimeout(resolve, ms));
@@ -27,24 +27,24 @@ const Fish = (props) => {
         let pixels = (tileSize / 16 * 12) + 'px'
         let shift = tileSize /16
 
-        var image = fishObj.lastDirection === 0 | fishObj.lastDirection === 2 | fishObj.lastDirection === 4 ? fish_staying_2 : fish_staying_1
-        if (fishObj.onHook) {
+        var image = fishLastDirection === 0 | fishLastDirection === 2 | fishLastDirection === 4 ? fish_staying_2 : fish_staying_1
+        if (fishOnHook) {
             image = fish_onhook
-        } else if (fishObj.direction > 0) {
-            image = moving[fishObj.direction];
+        } else if (fishDirection > 0) {
+            image = moving[fishDirection];
         } 
  
         const style = {width: pixels, height: pixels, backgroundColor:'', borderRadius: '0px', boxShadow: ''}
-        setFish({img:image,left:fishObj.hpos * tileSize + shift,top:fishObj.vpos * tileSize + shift, style:style,transition:(moveSpeed/1000) + "s"});
+        setFish({img:image,left:fishHpos * tileSize + shift,top:fishVpos * tileSize + shift, style:style,transition:(moveSpeed/1000) + "s"});
 
-        if (! fishObj.onHook && fishObj.direction > 0) {
+        if (! fishOnHook && fishDirection > 0) {
             sleep(moveSpeed).then(() => {
-                image = fishObj.lastDirection === 0 |  fishObj.lastDirection === 2 | fishObj.lastDirection === 4 ? fish_staying_2 : fish_staying_1
-                setFish({img:image,left:fishObj.hpos * tileSize + shift,top:fishObj.vpos * tileSize + shift, style:style, transition:(moveSpeed/1000) + "s"});
+                image = fishLastDirection === 0 |  fishLastDirection === 2 | fishLastDirection === 4 ? fish_staying_2 : fish_staying_1
+                setFish({img:image,left:fishHpos * tileSize + shift,top:fishVpos * tileSize + shift, style:style, transition:(moveSpeed/1000) + "s"});
             });
         }
 
-    },[fishObj,tileSize])    
+    },[fishVpos, fishHpos, fishDirection, fishLastDirection, fishOnHook,tileSize, moveSpeed])    
   
     return ( 
         <>

@@ -147,7 +147,7 @@ code {
   position: absolute;
 }
 
-.Tile {
+.Cell {
   left: 0px;
   top: 0px;
   width : 64 px;

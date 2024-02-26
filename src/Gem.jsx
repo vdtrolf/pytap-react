@@ -19,20 +19,20 @@ import showel_6 from "./images/ice-showel-6.png";
 export default function Gem(props) {
 
     const [gem,setGem] = useState({});  
-    const {gemObj,tileSize} = props;
+    const {gemHpos,gemVpos,gemAge, gemHasShowel,tileSize} = props;
 
     useEffect(() => {
 
         let pixels = tileSize  + 'px'
         const ice_img = [ice_6,ice_5,ice_4,ice_3,ice_2,ice_1,ice_1,ice_1]
         const showel_img = [showel_6,showel_5,showel_4,showel_3,showel_2,showel_1,showel_1,showel_1]
-        let imgAge = Math.floor(gemObj.age / 2) 
-        let image = gemObj.hasShowel ? showel_img[imgAge] :ice_img[imgAge];
+        let imgAge = Math.floor(gemAge / 2) 
+        let image = gemHasShowel ? showel_img[imgAge] :ice_img[imgAge];
  
         const style = {width: pixels, height: pixels, backgroundColor:'', borderRadius: '0px', boxShadow: ''}
-        setGem({img:image,left:gemObj.hpos * tileSize,top:gemObj.vpos * tileSize, style:style});
+        setGem({img:image,left:gemHpos * tileSize,top:gemVpos * tileSize, style:style});
 
-    },[gemObj,tileSize])    
+    },[gemAge, gemHpos, gemVpos, gemHasShowel,tileSize])    
   
     return ( 
         <>

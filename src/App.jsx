@@ -11,7 +11,15 @@ import IslandArea from "./IslandArea.jsx";
 import Footer from "./Footer.jsx";
 import convert from "./Fetchserver.js"
 
+import Island from "./data/island"
+import Cell from "./data/cell"
+import Fish from "./data/fish"
+import Gem from "./data/gem"
+import Garbage from "./data/garbage"
+import Penguin from "./data/penguin"
+
 import * as constants from "./Constants.jsx";
+import { COMMAND_BUILDING, COMMAND_CLEANING, COMMAND_EATING, COMMAND_FISHING, COMMAND_GETING, COMMAND_LOVING, COMMAND_MOVING, COMMAND_NONE, DIRECTION_DOWN, DIRECTION_LEFT, DIRECTION_NONE, DIRECTION_RIGHT, DIRECTION_UP } from "./utils/constants.js";
 
 export default function App() {
 
@@ -50,32 +58,34 @@ export default function App() {
   useEffect(() => {
       var intervalId = 0;
       if (runningState === constants.RUNNING && island && island.id > 0 ) {
-          intervalId = setInterval( () => {
-              refreshIsland(baseURL.url, island.id)
-              .then((updatedIsland) => {
-                  setMovedPenguins([]);
-                  setIsland(updatedIsland);
-                  setRenewSpeed(2200-updatedIsland.evolutionSpeed * 200);
-                  setMoveSpeed(1650-updatedIsland.evolutionSpeed * 150);
+        intervalId = setInterval( () => {
+
+          let slicedIsland = refreshIsland(island)
           
-                  updatedIsland.penguins.forEach(penguin => {
-                    if (penguin.key === selectedKey && ! penguin.alive) setSelectedKey(0);
-                  });
-          
-                  if ( ! updatedIsland.running) {
-                    setRunningState(constants.ENDED)
-                  } 
-          
-                  if (updatedIsland.islands) {
-                    setIslandsList(updatedIsland.islands);
-                  }
-              });
-          },renewSpeed)
+          setMovedPenguins([]);
+          setRenewSpeed(2200-slicedIsland.evolutionSpeed * 200);
+          setMoveSpeed(1650-slicedIsland.evolutionSpeed * 150);
+            
+          slicedIsland.penguins.forEach(penguin => {
+            if (penguin.key === selectedKey && ! penguin.alive) setSelectedKey(0);
+          });
+
+          if ( ! slicedIsland.running) {
+            setRunningState(constants.ENDED)
+          } 
+
+          if (slicedIsland.islands) {
+            setIslandsList(slicedIsland.islands);
+          }
+          setIsland(slicedIsland)
+        
+        },renewSpeed)
       }  else {
         clearInterval(intervalId);
       } 
+      
       return () => {
-      clearInterval(intervalId);
+        clearInterval(intervalId);
       }
 
   },[runningState,island,baseURL,renewSpeed,selectedKey]);
@@ -110,25 +120,24 @@ export default function App() {
 
   const handleOnceButton = () => {
     if (runningState !== constants.RUNNING && island && island.id > 0 ) {
-      refreshIsland(baseURL.url, island.id)
-      .then((updatedIsland) => {
-        setMovedPenguins([]);
-        setIsland(updatedIsland);
-        setRenewSpeed(2200-updatedIsland.evolutionSpeed * 200);
-        setMoveSpeed(1650-updatedIsland.evolutionSpeed * 150);
+      let slicedIsland = refreshIsland(island).slice()
 
-        updatedIsland.penguins.forEach(penguin => {
-          if (penguin.key === selectedKey && ! penguin.alive) setSelectedKey(0);
-        });
+      setMovedPenguins([]);  
+      setRenewSpeed(2200-slicedIsland.evolutionSpeed * 200);
+      setMoveSpeed(1650-slicedIsland.evolutionSpeed * 150);
 
-        if ( ! updatedIsland.running) {
-          setRunningState(constants.ENDED)
-        } 
-
-        if (updatedIsland.islands) {
-          setIslandsList(updatedIsland.islands);
-        }
+      slicedIsland.penguins.forEach(penguin => {
+        if (penguin.key === selectedKey && ! penguin.alive) setSelectedKey(0);
       });
+
+      if ( ! slicedIsland.running) {
+        setRunningState(constants.ENDED)
+      } 
+      if (slicedIsland.islands) {
+        setIslandsList(slicedIsland.islands);
+      }
+      setIsland(slicedIsland);
+
     } 
   }
 
@@ -177,10 +186,12 @@ export default function App() {
   }
 
   const handleTileClick = (vpos,hpos) => {
+
     // console.log("TILE CLICKED AT " + vpos + "/" + hpos);
-    
+
     if (selectedKey > 0) {
       const apenguin = island.penguins.find(penguin => penguin.vpos === vpos && penguin.hpos === hpos);
+
       if (apenguin && apenguin.key === selectedKey) {
         setSelectedKey(0);
         setIlluminatedKey(0);
@@ -194,79 +205,75 @@ export default function App() {
           const targetPenguin = island.penguins.find(penguin => penguin.vpos === vpos && penguin.hpos === hpos);
           const agem = island.gems.find(gem => gem.vpos === vpos && gem.hpos === hpos);
           const agarbage = island.garbages.find(garbage => garbage.vpos === vpos && garbage.hpos === hpos);
-          const acell = island.tiles.find(tile => tile.vpos === vpos && tile.hpos === hpos);
+          const acell = island.cells.find(cell => cell.vpos === vpos && cell.hpos === hpos);
 
-          // console.log("on " + vpos + "/" + hpos + ", seledcted = " + selectedPenguin.vpos + "/" + selectedPenguin.hpos )
+          console.log("on " + vpos + "/" + hpos + ", seledcted = " + selectedPenguin.vpos + "/" + selectedPenguin.hpos )
+          console.dir(island.fishes)
+
 
           if (selectedPenguin && selectedPenguin.activity === constants.ACTIVITY_NONE &&
               ((Math.abs(vpos - selectedPenguin.vpos) === 1 && hpos === selectedPenguin.hpos) || 
               (Math.abs(hpos - selectedPenguin.hpos) === 1 && vpos === selectedPenguin.vpos))) {
 
-            let command1 = ""
-            let command2 = ""
-            let dir = "D" 
+            let commandType = COMMAND_NONE
+            let commandDirection = DIRECTION_NONE
 
             if (vpos < selectedPenguin.vpos) {
-              dir = "U"
+              commandDirection = DIRECTION_UP
             } else if (vpos > selectedPenguin.vpos) {
-              dir = "D"
+              commandDirection = DIRECTION_DOWN
             } else {
               if (hpos < selectedPenguin.hpos) {
-                dir = "L"
+                commandDirection = DIRECTION_LEFT
               } else {
-                dir = "R"
+                commandDirection = DIRECTION_RIGHT
               }
             }
 
             if (afish && ! afish.onHook) {
-              command1 = "F"
-              command2 = dir
+              commandType = COMMAND_FISHING
               selectedPenguin.goal = constants.ACTIVITY_FISHING
               selectedPenguin.activityText = "Going to fish"
               console.log("there is a fish")
             } else if (agem && ! agem.isTaken && ! selectedPenguin.isChild && ! selectedPenguin.isOld) {
-              command1 = "G"
-              command2 = dir
+              commandType = COMMAND_GETING
               selectedPenguin.goal = constants.ACTIVITY_GETING
               console.log("There is a gem")
               selectedPenguin.activityText = "Going to grab some ice "
             } else if (agarbage && ! agarbage.isTaken && selectedPenguin.hasShowel &&! selectedPenguin.isChild && ! selectedPenguin.isOld) {
-              command1 = "C"
-              command2 = dir
+              commandType = COMMAND_CLEANING
               selectedPenguin.goal = constants.ACTIVITY_CLEANING
               console.log("There is a garbage")  
               selectedPenguin.activityText = "Going to clean"  
             } else if (targetPenguin && targetPenguin.canLove && selectedPenguin.canLove && ! selectedPenguin.isChild && ! targetPenguin.isChild && ! selectedPenguin.isOld && ! targetPenguin.isOld && targetPenguin.gender !== selectedPenguin.gender) {
-                command1 = "K"
-                command2 = dir
+                commandType = COMMAND_LOVING
                 selectedPenguin.goal = constants.ACTIVITY_LOVING
                 selectedPenguin.activityText = "Going to love"
                 console.log("there is a loved once")
-            } else if (acell.type > 0 && ! agem) {
-              command1 = dir.toUpperCase().substring(0,1)  
-              if (command1 === "L") {
+            } else if (acell.type > 0 && ! agem && ! targetPenguin) {
+              if (commandDirection === DIRECTION_LEFT) {
                 selectedPenguin.activityDirection =1;
-              } else if (command1 === "R") {
+              } else if (commandDirection === DIRECTION_RIGHT) {
                 selectedPenguin.activityDirection =2;
-              } else if (command1 === "U") {
+              } else if (commandDirection === DIRECTION_UP) {
                 selectedPenguin.activityDirection =3;
-              } else if (command1 === "D") {
+              } else if (commandDirection === DIRECTION_DOWN) {
                 selectedPenguin.activityDirection =4;
               }
+              commandType = COMMAND_MOVING
               selectedPenguin.goal = constants.ACTIVITY_MOVING
-              console.log("It's going to " + command1)
-              selectedPenguin.activityText = "Going to move to " + command1
+              selectedPenguin.activityText = "Going to move" 
             } else if (acell.type === 0 && selectedPenguin.hasGem && ! selectedPenguin.isChild && ! selectedPenguin.isOld) {
-              command1 = "B"
-              command2 = dir  
+              commandType = COMMAND_BUILDING
               selectedPenguin.goal = constants.ACTIVITY_BUILDING
-              console.log("Let's build " + dir)
-              selectedPenguin.activityText = "Going to move"
+              console.log("Let's build ")
+              selectedPenguin.activityText = "Going to build"
             } 
 
-            if (command1 !== "") {
-              setCommand(baseURL.url,island.id,selectedKey,command1,command2)
-              .then((updatedIsland) => setIsland(updatedIsland));
+            if (commandType !== COMMAND_NONE) {
+              let slicedIsland = setCommand(island,selectedPenguin,commandType,commandDirection)
+              setIsland(slicedIsland)
+              setMovedPenguins([])
             }  
 
           } else {
@@ -287,17 +294,18 @@ export default function App() {
   } 
 
   const handleEatButton = (key) => {
-    console.log("EAT BUTToN PRESSED for " + key);
+    console.log("EAT BUTTON PRESSED for " + key);
    
     const selectedPenguin = island.penguins.find(penguin => penguin.key === selectedKey );
     selectedPenguin.goal = 1
     selectedPenguin.activityText = "Going to eat "
 
-    setCommand(baseURL.url,island.id,key,"E","")
+    setCommand(island,key,COMMAND_EATING,DIRECTION_NONE)
     .then((commandData) => console.log(commandData));
     setSelectedKey(0);
     setIlluminatedKey(0);
     setIsland(island)
+    setMovedPenguins([])
     
   } 
 
@@ -334,7 +342,7 @@ export default function App() {
     }  
 
     setRunningState(constants.RUNNING);
-    refreshIsland(baseURL.url, id)
+    refreshIsland(island)
     .then((updatedIsland) => setIsland(updatedIsland));
   }
 
@@ -394,14 +402,13 @@ const getNewIsland = async (baseURL,boardSize,boardDifficulty) => {
   return extractIslandData(islandData);
 }
 
-const refreshIsland = async (baseURL,islandId) => {
-  const islandData = await convert(baseURL + "refresh/" + islandId);
-  return extractIslandData(islandData);
+const refreshIsland = (island) => {
+  return island.becomeOlder()
 }
 
-const setCommand = async (baseURL,islandId,penguinId,command1,command2) => {
-   const islandData = await convert(baseURL + "command/" + islandId + "?penguinId=" + penguinId + "&command1=" + command1 + "&command2=" + command2  );
-   return extractIslandData(islandData);
+const setCommand = (island,penguin,commandType,commandDirection) => {
+   island.transmitCommands(penguin,commandType,commandDirection)
+   return island
 }
 
 const refreshIslandsList = async (baseURL,islandToDelete=0)  => {
@@ -417,11 +424,13 @@ const refreshIslandsList = async (baseURL,islandToDelete=0)  => {
 
 const extractIslandData = (islandData) => {
 
-  console.dir(islandData)
-  
-  
-  const tiles = [];
-  const artifacts = [];
+
+  // console.log("================= ISLANDDATA =============")
+  // console.dir(islandData)
+  // console.log("================= ISLANDDATA =============")
+
+
+  const cells = [];
   const penguins = [];
   const fishes = [];
   const gems = [];
@@ -432,83 +441,94 @@ const extractIslandData = (islandData) => {
 
     islandData.cells.forEach(cellsline => {
       cellsline.forEach(cell => {   
-        tiles.push({key: cell.id, 
-                  type: cell.type, 
-                  angle: cell.angle, 
-                  vpos: cell.vpos, 
-                  hpos: cell.hpos})
-  
-      }); 
+        cells.push( new Cell( cell.id,
+          cell.key,
+          cell.vpos,
+          cell.hpos,
+          cell.type,
+          cell.beingBuilt,
+        )); 
+      });
+      // cells.push(aline)
     });
  
     if (islandData.penguins) {
 
       islandData.penguins.forEach(penguin => {
-        var gender = penguin.gender==="M"?"m":"f";
-        var genderName  = penguin.gender==="M"?"Male":"Female";
-        var canLove = penguin.canLove;
-        if (penguin.isChild ) {
-          gender = "y";
-          canLove = false;
-        } 
-        var activity = penguin.activity;
 
-        penguins.push({key: penguin.key, 
-                      alive:penguin.alive, 
-                      name:penguin.name, 
-                      vpos:penguin.vpos, 
-                      hpos:penguin.hpos, 
-                      hasGem:penguin.hasGem, 
-                      hasFish:penguin.hasFish,
-                      gender: gender, 
-                      activity: activity, 
-                      hunger:penguin.hunger, 
-                      temp:penguin.temp, 
-                      shape:penguin.shape, 
-                      age:penguin.age, 
-                      isChild : penguin.isChild,
-                      isOld: penguin.isOld,
-                      genderName:genderName, 
-                      activityDirection:penguin.activityDirection, 
-                      activityText:penguin.activityText, 
-                      goal:penguin.goal,
-                      vision: 2,
-                      canLove:canLove,
-                      inLove:penguin.inLove,
-                      hasShowel:penguin.hasShowel
-                    })
+        penguins.push(new Penguin(penguin.id,
+          penguin.key,
+          penguin.vpos,
+          penguin.hpos,
+          penguin.alive,
+          penguin.age,
+          penguin.deadAge,
+          penguin.hunger,
+          penguin.temp,
+          penguin.gender,
+          penguin.genderName,
+          penguin.name,
+          penguin.shape,
+          penguin.activity,
+          penguin.activityTime,
+          penguin.activityTarget,
+          penguin.targetVPos,
+          penguin.targetHPos,
+          penguin.activityVPos,
+          penguin.activityHPos,
+          penguin.activityDirection,
+          penguin.activityText, 
+          penguin.goal,
+          penguin.hasFish,
+          penguin.hasGem,
+          penguin.isChild,
+          penguin.isOld,
+          penguin.canLove,
+          penguin.inLove,
+          penguin.loveTime,
+          penguin.hasShowel,
+          penguin.showelCnt,
+          penguin.commands))
+        
       }); 
     }
 
     if (islandData.fishes) { 
       islandData.fishes.forEach(fish => {
-        fishes.push({key: fish.key, 
-                    vpos:fish.vpos, 
-                    hpos:fish.hpos, 
-                    onHook:fish.onHook, 
-                    staying:false,
-                    direction:fish.direction,
-                    lastDirection:fish.lastDirection})
-      });
+        fishes.push( new Fish( fish.id,
+          fish.key,
+          fish.vpos,
+          fish.hpos,
+          fish.alive,
+          fish.onHook,
+          fish.staying,
+          fish.direction,
+          fish.lastDirection))
+         });
     }
 
     if (islandData.gems) { 
       islandData.gems.forEach(gem => {
-        gems.push({key: gem.key, 
-                    vpos:gem.vpos, 
-                    hpos:gem.hpos, 
-                    age:gem.age,
-                    isTaken:gem.isTaken,
-                    hasShowel:gem.hasShowel})
+        gems.push( new Gem ( gem.id,
+          gem.key,
+          gem.vpos,
+          gem.hpos,
+          gem.hasShowel,
+          gem.age,
+          gem.isTaken))
+          
       }); 
     }
 
     if (islandData.garbages) { 
       islandData.garbages.forEach(garbage => {
-        garbages.push({key: garbage.key, 
-                    vpos:garbage.vpos, 
-                    hpos:garbage.hpos, 
-                    kind:garbage.kind + 1})
+        garbages.push( new Garbage(garbage.id,
+          garbage.key,
+          garbage.vpos,
+          garbage.hpos,
+          garbage.kind,
+          garbage.isTaken))
+ 
       }); 
     }
 
@@ -524,23 +544,26 @@ const extractIslandData = (islandData) => {
       }; 
     } 
 
-    return {id: islandData.id,
-            name: islandData.name,
-            size: islandData.size,
-            points: islandData.points,
-            year: islandData.year,
-            weather: islandData.weather,
-            plasticControl: true,
-            evolutionSpeed : islandData.evolutionSpeed,
-            running: islandData.onGoing,
-            tiles: tiles,
-            artifacts: artifacts,
-            penguins: penguins,
-            fishes: fishes,
-            gems: gems,
-            garbages: garbages,
-            islands: islands
-          }
+    return new Island(islandData.id,
+                      islandData.key,
+                      islandData.size,
+                      islandData.difficulty,
+                      islandData.name,
+                      islandData.counter,
+                      islandData.weather,
+                      islandData.weatherAge,
+                      islandData.year,
+                      islandData.points,
+                      islandData.plasticControl,
+                      islandData.running,
+                      islandData.evolutionSpeed,
+                      islandData.onGoing,
+                      penguins,
+                      fishes,
+                      gems,
+                      garbages,
+                      cells,)
+          
 
   } else {
     return {}
