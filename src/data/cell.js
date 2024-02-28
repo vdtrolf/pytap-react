@@ -11,7 +11,7 @@ export default class Cell {
         hpos,
         type,
         beingBuilt) {
-            this.id = id;
+            this.id = id
             this.key = key
             this.vpos = vpos
             this.hpos = hpos

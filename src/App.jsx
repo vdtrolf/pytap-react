@@ -42,7 +42,7 @@ export default function App() {
   const [tileSize,setTileSize] = useState(64);
   const [gridClass,setGridClass] = useState('GridClass64');
   const [islandsList,setIslandsList] = useState([]);
-  const [movedPenguins,setMovedPenguins] = useState([]);
+  const [dempedPenguins,setMovedPenguins] = useState([]);
   const [renewSpeed,setRenewSpeed] = useState(2000)
   const [moveSpeed,setMoveSpeed] = useState(1500)
   
@@ -60,7 +60,7 @@ export default function App() {
       if (runningState === constants.RUNNING && island && island.id > 0 ) {
         intervalId = setInterval( () => {
 
-          let slicedIsland = refreshIsland(island)
+          let slicedIsland = island.becomeOlder()
           
           setMovedPenguins([]);
           setRenewSpeed(2200-slicedIsland.evolutionSpeed * 200);
@@ -100,6 +100,11 @@ export default function App() {
     setSelectedKey(0)
     getNewIsland(baseURL.url,size,difficulty)
     .then((newIsland ) => {
+
+      console.dir(newIsland)
+
+
+
       if (newIsland.size === 6) {
         setTileSize(96);
         setGridClass('GridArea96');
@@ -120,7 +125,7 @@ export default function App() {
 
   const handleOnceButton = () => {
     if (runningState !== constants.RUNNING && island && island.id > 0 ) {
-      let slicedIsland = refreshIsland(island).slice()
+      let slicedIsland = island.becomeOlder()
 
       setMovedPenguins([]);  
       setRenewSpeed(2200-slicedIsland.evolutionSpeed * 200);
@@ -199,7 +204,7 @@ export default function App() {
 
         const selectedPenguin = island.penguins.find(penguin => penguin.key === selectedKey );
 
-        if ( selectedPenguin && ! movedPenguins.includes(selectedPenguin.key)) {
+        if ( selectedPenguin && ! dempedPenguins.includes(selectedPenguin.key)) {
 
           const afish = island.fishes.find(fish => fish.vpos === vpos && fish.hpos === hpos);
           const targetPenguin = island.penguins.find(penguin => penguin.vpos === vpos && penguin.hpos === hpos);
@@ -232,22 +237,12 @@ export default function App() {
 
             if (afish && ! afish.onHook) {
               commandType = COMMAND_FISHING
-              selectedPenguin.goal = constants.ACTIVITY_FISHING
-              selectedPenguin.activityText = "Going to fish"
-              console.log("there is a fish")
             } else if (agem && ! agem.isTaken && ! selectedPenguin.isChild && ! selectedPenguin.isOld) {
               commandType = COMMAND_GETING
-              selectedPenguin.goal = constants.ACTIVITY_GETING
-              console.log("There is a gem")
-              selectedPenguin.activityText = "Going to grab some ice "
             } else if (agarbage && ! agarbage.isTaken && selectedPenguin.hasShowel &&! selectedPenguin.isChild && ! selectedPenguin.isOld) {
               commandType = COMMAND_CLEANING
-              selectedPenguin.goal = constants.ACTIVITY_CLEANING
-              console.log("There is a garbage")  
-              selectedPenguin.activityText = "Going to clean"  
             } else if (targetPenguin && targetPenguin.canLove && selectedPenguin.canLove && ! selectedPenguin.isChild && ! targetPenguin.isChild && ! selectedPenguin.isOld && ! targetPenguin.isOld && targetPenguin.gender !== selectedPenguin.gender) {
                 commandType = COMMAND_LOVING
-                selectedPenguin.goal = constants.ACTIVITY_LOVING
                 selectedPenguin.activityText = "Going to love"
                 console.log("there is a loved once")
             } else if (acell.type > 0 && ! agem && ! targetPenguin) {
@@ -261,18 +256,14 @@ export default function App() {
                 selectedPenguin.activityDirection =4;
               }
               commandType = COMMAND_MOVING
-              selectedPenguin.goal = constants.ACTIVITY_MOVING
               selectedPenguin.activityText = "Going to move" 
             } else if (acell.type === 0 && selectedPenguin.hasGem && ! selectedPenguin.isChild && ! selectedPenguin.isOld) {
               commandType = COMMAND_BUILDING
-              selectedPenguin.goal = constants.ACTIVITY_BUILDING
-              console.log("Let's build ")
-              selectedPenguin.activityText = "Going to build"
+              
             } 
 
             if (commandType !== COMMAND_NONE) {
-              let slicedIsland = setCommand(island,selectedPenguin,commandType,commandDirection)
-              setIsland(slicedIsland)
+              setIsland(island.transmitCommands(selectedPenguin,commandType,commandDirection))
               setMovedPenguins([])
             }  
 
@@ -297,14 +288,10 @@ export default function App() {
     console.log("EAT BUTTON PRESSED for " + key);
    
     const selectedPenguin = island.penguins.find(penguin => penguin.key === selectedKey );
-    selectedPenguin.goal = 1
-    selectedPenguin.activityText = "Going to eat "
 
-    setCommand(island,key,COMMAND_EATING,DIRECTION_NONE)
-    .then((commandData) => console.log(commandData));
+    setIsland(island.transmitCommands(selectedPenguin,COMMAND_EATING,DIRECTION_NONE))
     setSelectedKey(0);
     setIlluminatedKey(0);
-    setIsland(island)
     setMovedPenguins([])
     
   } 
@@ -342,8 +329,8 @@ export default function App() {
     }  
 
     setRunningState(constants.RUNNING);
-    refreshIsland(island)
-    .then((updatedIsland) => setIsland(updatedIsland));
+    setIsland(island.becomeOlder())
+    
   }
 
   const handleIslandDelete = (idList) => {
@@ -361,7 +348,6 @@ export default function App() {
   }
 
   const handleURLSelect = (url) => {
-
     console.log("URL SELECTED " + url)
     setBaseURL(url);
     setIsland({});
@@ -388,7 +374,7 @@ export default function App() {
       <Navbar runningState={runningState} island={island} admin={admin} onStartButton={handleStartButton} onOnceButton={handleOnceButton} onStopButton={handleStopButton} onPlusButton={handlePlusButton} onCloneButton={handleCloneButton} onAdminButton={handleAdminButton} />
       <div className="WorkArea">
         {runningState === constants.NOT_STARTED && <Startup originalSize={boardSize} originalDifficulty={boardDifficulty} onCreateButton={handleCreateButton}/>}
-        {runningState !== constants.NOT_STARTED && <IslandArea showBalloons={showBalloons} runningState={runningState} island={island} onTileClick={handleTileClick} illuminatedKey={illuminatedKey} movedPenguins={movedPenguins} tileSize={tileSize} gridClass={gridClass} moveSpeed={moveSpeed}/>}
+        {runningState !== constants.NOT_STARTED && <IslandArea showBalloons={showBalloons} runningState={runningState} island={island} onTileClick={handleTileClick} illuminatedKey={illuminatedKey} dempedPenguins={dempedPenguins} tileSize={tileSize} gridClass={gridClass} moveSpeed={moveSpeed}/>}
         {runningState !== constants.NOT_STARTED && selectedKey === 0 && (<Footer penguins={island.penguins} onPenguinEnter={handlePenguinEnter} onPenguinLeave={handlePenguinLeave} onPenguinClick={handlePenguinClick} illuminatedKey={illuminatedKey}/>)}
         {runningState !== constants.NOT_STARTED && selectedKey > 0 && (<Details penguinObj={island.penguins.find(penguin => penguin.key === selectedKey)} onDetailsCloseButton={handleDetailsCloseButton} onEatButton={handleEatButton}/> )}
         {runningState === constants.NOT_STARTED && <div className="Footer">&nbsp;</div>}
@@ -400,15 +386,6 @@ export default function App() {
 const getNewIsland = async (baseURL,boardSize,boardDifficulty) => {
   const islandData = await convert(baseURL + "create?size=" + boardSize + "&difficulty=" + boardDifficulty)
   return extractIslandData(islandData);
-}
-
-const refreshIsland = (island) => {
-  return island.becomeOlder()
-}
-
-const setCommand = (island,penguin,commandType,commandDirection) => {
-   island.transmitCommands(penguin,commandType,commandDirection)
-   return island
 }
 
 const refreshIslandsList = async (baseURL,islandToDelete=0)  => {
@@ -425,9 +402,9 @@ const refreshIslandsList = async (baseURL,islandToDelete=0)  => {
 const extractIslandData = (islandData) => {
 
 
-  // console.log("================= ISLANDDATA =============")
-  // console.dir(islandData)
-  // console.log("================= ISLANDDATA =============")
+  console.log("================= ISLANDDATA =============")
+  console.dir(islandData)
+  console.log("================= ISLANDDATA =============")
 
 
   const cells = [];
@@ -478,7 +455,6 @@ const extractIslandData = (islandData) => {
           penguin.activityHPos,
           penguin.activityDirection,
           penguin.activityText, 
-          penguin.goal,
           penguin.hasFish,
           penguin.hasGem,
           penguin.isChild,
@@ -495,7 +471,7 @@ const extractIslandData = (islandData) => {
 
     if (islandData.fishes) { 
       islandData.fishes.forEach(fish => {
-        fishes.push( new Fish( fish.id,
+        fishes.push(new Fish ( fish.id,
           fish.key,
           fish.vpos,
           fish.hpos,
@@ -503,9 +479,12 @@ const extractIslandData = (islandData) => {
           fish.onHook,
           fish.staying,
           fish.direction,
-          fish.lastDirection))
-         });
+          fish.lastDirection)
+        )
+      });
     }
+
+    // console.dir(fishes)
 
     if (islandData.gems) { 
       islandData.gems.forEach(gem => {

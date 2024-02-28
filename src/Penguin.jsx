@@ -120,7 +120,7 @@ import cross from "./images/cross.png";
 export default function Penguin(props) {
 
   const [penguin,setPenguin] = useState({});  
-  const {penguinObj, illuminatedKey, movedPenguins, tileSize, moveSpeed} = props;
+  const {penguinObj, illuminatedKey, dempedPenguins, tileSize, moveSpeed} = props;
 
   const sleep = (ms) => {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -130,7 +130,7 @@ export default function Penguin(props) {
 
     const calculateImg = (penguinObj) => {
       let image = peng_m
-      if (movedPenguins.includes(penguinObj.key)) {
+      if (dempedPenguins.includes(penguinObj.key)) {
         if ( penguinObj.isOld) {
           if (penguinObj.hasFish) {
             image = penguinObj.gender ==="m"? peng_m_old_demp_fish : peng_f_old_demp_fish;   
@@ -237,8 +237,6 @@ export default function Penguin(props) {
     const moving_m = [peng_m,peng_m_1_moving,peng_m_2_moving,peng_m_3_moving,peng_m_4_moving]
     const moving_y = [peng_y,peng_y_1_moving,peng_y_2_moving,peng_y_3_moving,peng_y_4_moving]
 
-    // console.log(penguinObj.key + " " + penguinObj.goal + " " + penguinObj.activityDirection + " Done: " + movedPenguins.includes(penguinObj.key))
-    
     var hasballoon = false;
     
     let balloon = null;
@@ -253,7 +251,7 @@ export default function Penguin(props) {
     let image = calculateImg(penguinObj)
     
     if (penguinObj.activity === constants.ACTIVITY_MOVING || penguinObj.activity === constants.ACTIVITY_FLEE) {
-      if (penguinObj.activityDirection && ! movedPenguins.includes(penguinObj.key)) {
+      if (penguinObj.activityDirection && ! dempedPenguins.includes(penguinObj.key)) {
         image = penguinObj.gender ==="m"? moving_m[penguinObj.activityDirection]: moving_f[penguinObj.activityDirection];
         if (penguinObj.isChild) image = moving_y[penguinObj.activityDirection];
       }
@@ -275,7 +273,7 @@ export default function Penguin(props) {
     // var style = {width: '56px', height:'56px', backgroundColor:'', borderRadius: '0px', boxShadow: '', opacity: penguinObj.activityDone?'0.7':'1'}
     var style = {width: pixels, height:pixels, backgroundColor:'', borderRadius: '0px', boxShadow: ''}
     if (penguinObj.key === illuminatedKey) {
-      if (movedPenguins.includes(penguinObj.key)) {
+      if (dempedPenguins.includes(penguinObj.key)) {
         style = {width: pixels, height: pixels, backgroundColor:'rgba(41,134,204, 0.5)', borderRadius:'25px', boxShadow: '10px 10px 20px #2986CC'}      
       } else {
         style = {width: pixels, height: pixels, backgroundColor:'rgba(255, 195, 0, 0.5)', borderRadius:'25px', boxShadow: '0 0 20px #FFC300'}
@@ -286,10 +284,10 @@ export default function Penguin(props) {
 
     setPenguin({img:image,left:penguinObj.hpos * tileSize + shift,top:penguinObj.vpos * tileSize + shift,alive:penguinObj.alive, style:style, balloon:balloon, hasballoon:hasballoon, transition:(moveSpeed/1000) + "s"});
   
-    if ((penguinObj.activity === constants.ACTIVITY_MOVING || penguinObj.activity === constants.ACTIVITY_FLEE) && ! movedPenguins.includes(penguinObj.key)) {
+    if ((penguinObj.activity === constants.ACTIVITY_MOVING || penguinObj.activity === constants.ACTIVITY_FLEE) && ! dempedPenguins.includes(penguinObj.key)) {
 
       sleep(moveSpeed - 200).then(() => {
-          movedPenguins.push(penguinObj.key)
+          dempedPenguins.push(penguinObj.key)
           penguinObj.activity = 0
           penguinObj.activityDirection = 0
           penguinObj.activityDone = false
@@ -303,7 +301,7 @@ export default function Penguin(props) {
       });
     }
   
-  },[penguinObj,illuminatedKey,movedPenguins, tileSize])    
+  },[penguinObj,illuminatedKey,dempedPenguins, tileSize, moveSpeed])    
   
   return ( 
     <>

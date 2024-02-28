@@ -29,7 +29,6 @@ export default class Penguin {
         activityHPos,
         activityDirection,
         activityText, 
-        goal,
         hasFish,
         hasGem,
         isChild,
@@ -62,7 +61,6 @@ export default class Penguin {
             this.activityHPos = activityHPos
             this.activityDirection = activityDirection
             this.activityText = activityText
-            this.goal = goal
             this.hasFish = hasFish
             this.hasGem = hasGem
             this.isChild = isChild
@@ -95,9 +93,6 @@ export default class Penguin {
                     this.activity = ACTIVITY_NONE
                     this.activityDirection = DIRECTION_NONE
                 } else if (this.activity === ACTIVITY_FISHING) {
-    
-    
-    
                     this.hasFish = true
                     this.activity = ACTIVITY_NONE
                     this.activityDirection = DIRECTION_NONE
@@ -137,13 +132,11 @@ export default class Penguin {
                 } else if (this.hasGem && this.activity === ACTIVITY_BUILDING) {
                     this.temp = 0
                     this.hasGem = false
-                    cellsPos[this.activityVPos * 100 + this.activityHPos].type = 12
+                    cellsPos[this.activityVPos * 100 + this.activityHPos].type = 10
                     cellsPos[this.activityVPos * 100 + this.activityHPos].beingBuilt = false
                     this.activity = ACTIVITY_NONE
                     this.activityDirection = DIRECTION_NONE
                 }
-    
-                this.goal = ACTIVITY_NONE
     
                 this.activityText = ACTIVITY_NAMES[this.activity]
     
@@ -209,7 +202,6 @@ export default class Penguin {
                     this.vpos = direction.vpos
                     this.hpos = direction.hpos
                     this.activity = ACTIVITY_FLEE
-                    this.goal = ACTIVITY_FLEE
                     this.activityTime = 1
                     this.activityDirection = direction.direction
     
@@ -261,7 +253,6 @@ export default class Penguin {
                     this.vpos = direction.vpos
                     this.hpos = direction.hpos
                     this.activity = command.activity
-                    this.goal = command.activity
                     this.activityDirection = command['directionNum']
                     this.activityTime = 1
                 }
@@ -270,9 +261,10 @@ export default class Penguin {
                     fishesPos[coord].onHook = true
                     this.activityTime = 3
                     this.activity = command.activity
-                    this.goal = command.activity
                     this.activityTarget = coord
                     this.activityDirection = command['directionNum']
+                    this.activityText = "Going to fish"
+                    console.log("there is a fish")
                 } else {
                     this.activity = ACTIVITY_NONE
                     this.activityDirection = DIRECTION_NONE
@@ -284,13 +276,11 @@ export default class Penguin {
                     penguinsPos[coord].love_time = 10
                     penguinsPos[coord].can_love = false
                     penguinsPos[coord].activity = command.activity
-                    penguinsPos[coord].goal = command.activity
                     this.loveTime = 10
                     this.canLove = false
                     this.inLove = true
                     this.activityTime = 3
                     this.activity = command.activity
-                    this.goal = command.activity
                     this.activityTarget = coord
                     this.activityDirection = command['directionNum']
                 } else {
@@ -302,9 +292,10 @@ export default class Penguin {
     
                     this.activityTime = 3
                     this.activity = command.activity
-                    this.goal = command.activity
                     this.activityTarget = coord
                     this.activityDirection = command['directionNum']
+                    this.activityText = "Going to grab some ice "
+                    console.log("There is a gem")
                 } else {
                     this.activity = ACTIVITY_NONE
                     this.activityDirection = DIRECTION_NONE
@@ -313,9 +304,10 @@ export default class Penguin {
                 if (garbagesPos[coord]) {
                     this.activityTime = 2
                     this.activity = command.activity
-                    this.goal = command.activity
                     this.activityTarget = coord
                     this.activityDirection = command['directionNum']
+                    this.activityText = "Going to clean"  
+                    console.log("There is a garbage")  
                 } else {
                     this.activity = ACTIVITY_NONE
                     this.activityDirection = DIRECTION_NONE
@@ -324,8 +316,8 @@ export default class Penguin {
                 if (this.hasFish) {
                     this.activityTime = 2
                     this.activity = command.activity
-                    this.goal = command.activity
                     this.activityDirection = command['directionNum']
+                    this.activityText = "Going to eat "
                 } else {
                     this.activity = ACTIVITY_NONE
                     this.activityDirection = DIRECTION_NONE
@@ -335,15 +327,12 @@ export default class Penguin {
                     this.activityTime = 3
                     this.activityVPos = direction.vpos
                     this.activityHPos = direction.hpos
-                    
-                    console.dir(cellsPos)
-    
                     cellsPos[this.activityVPos * 100 + this.activityHPos].type = 4
                     cellsPos[this.activityVPos * 100 + this.activityHPos].beingBuilt = true
                     this.activity = command.activity
-                    this.goal = command.activity
                     this.activityDirection = command['directionNum']
-    
+                    this.activityText = "Going to build"
+                    console.log("Let's build ")
                 } else {
                     this.activity = ACTIVITY_NONE
                     this.activityDirection = DIRECTION_NONE

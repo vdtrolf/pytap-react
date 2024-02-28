@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.26b16f3c.css",
-    "main.js": "/static/js/main.eb24c9e7.js",
+    "main.css": "/static/css/main.c2de07bf.css",
+    "main.js": "/static/js/main.5f0a7299.js",
     "static/js/787.671e8438.chunk.js": "/static/js/787.671e8438.chunk.js",
     "static/media/TTP_Startup_bg.png": "/static/media/TTP_Startup_bg.b56f7f8cfa3f7d7ef494.png",
     "static/media/peng-loving.gif": "/static/media/peng-loving.09eee8303bdc2a4e845d.gif",
@@ -152,12 +152,12 @@
     "static/media/balloon-food.png": "/static/media/balloon-food.af1f1b2a1d9a41ff1bde.png",
     "static/media/foreground-cold.png": "/static/media/foreground-cold.55c819d41c519842ba50.png",
     "index.html": "/index.html",
-    "main.26b16f3c.css.map": "/static/css/main.26b16f3c.css.map",
-    "main.eb24c9e7.js.map": "/static/js/main.eb24c9e7.js.map",
+    "main.c2de07bf.css.map": "/static/css/main.c2de07bf.css.map",
+    "main.5f0a7299.js.map": "/static/js/main.5f0a7299.js.map",
     "787.671e8438.chunk.js.map": "/static/js/787.671e8438.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.26b16f3c.css",
-    "static/js/main.eb24c9e7.js"
+    "static/css/main.c2de07bf.css",
+    "static/js/main.5f0a7299.js"
   ]
 }

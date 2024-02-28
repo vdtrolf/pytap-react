@@ -69,8 +69,10 @@ export default class Island {
     #populateFishes = () => {
         const fishesPos = {};
         this.fishes.forEach(function(item, index, object) {
-            if (item.alive) {
+            if ( ! item.alive) {
                 object.splice(index, 1);
+            } else {
+                fishesPos[item.vpos * 100 + item.hpos] = item
             }
         });
         return fishesPos
@@ -101,8 +103,6 @@ export default class Island {
     }
     
     transmitCommands = (penguin, commandType, commandDirection) => {
-
-        console.log("============= TRANSMIT ============== " + commandType + " " + commandDirection)
           
         penguin.executeCommand( commandType, 
             commandDirection,
@@ -121,7 +121,7 @@ export default class Island {
     
         const deepDebug = false
         let penguinsPos = this.#populatePenguins()
-        const fishesPos = this.#populateFishes()
+        let fishesPos = this.#populateFishes()
         const garbagesPos = this.#populateGarbages()
         const cellsPos = this.#populateCells()
         const gemsPos = this.#populateGems()
@@ -145,14 +145,10 @@ export default class Island {
             
             this.fishes.forEach(fish => {
                 if (true) { // fish.alive) {
-                    const move = fish.becomeOlder(cellsPos, fishesPos, garbagesPos, this.size)
-                    fish.vpos = move.vpos
-                    fish.hpos = move.hpos
-                    fish.direction = move.direction
-                    fish.lastDirection = move.direction
-                    fishesPos[move.vpos * 100 + move.hpos] = fish
+                    fish.becomeOlder(cellsPos, fishesPos, garbagesPos, this.size)
                 }
             })
+            fishesPos = this.#populateFishes()
     
             // add some fishes
             let cntFishes = this.fishes.length
@@ -163,7 +159,7 @@ export default class Island {
     
                 if (cellsPos[v * 100 + h].type === 0 && !fishesPos[v * 100 + h] && !garbagesPos[v * 100 + h]) {
                     const uniqueKey = getUniqueKey(PREFIX_FISH)
-                    const fish = new Fish(1, uniqueKey, v, h);
+                    const fish = new Fish(1, uniqueKey, v, h,true,false,false,0,0);
                     this.fishes.push(fish)
                     fishesPos[v * 100 + h] = fish;
                     cntFishes += 1
@@ -185,7 +181,7 @@ export default class Island {
     
                     //console.log("=============> GARBAGE 1 " + v + " " + h)
     
-                    if (cellsPos[v * 100 + h].type === 0 && !fishesPos[v * 100 + h] && !garbagesPos[v * 100 + h]
+                    if ((v+h) > 0 && cellsPos[v * 100 + h].type === 0 && !fishesPos[v * 100 + h] && !garbagesPos[v * 100 + h]
                         && (garbagesPos[(v + 1) * 100 + h] || garbagesPos[(v - 1) * 100 + h] || garbagesPos[v * 100 + h + 1] || garbagesPos[v * 100 + h - 1])) {
     
                         // console.log("=============> GARBAGE")

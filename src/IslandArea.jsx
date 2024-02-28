@@ -13,7 +13,7 @@ import * as constants from "./Constants.jsx";
 
 export default function IslandArea(props) {
 
-  const {runningState, island, onTileClick, showBalloons, illuminatedKey, movedPenguins, tileSize, gridClass, moveSpeed } = props;
+  const {runningState, island, onTileClick, showBalloons, illuminatedKey, dempedPenguins, tileSize, gridClass, moveSpeed } = props;
   const weather = island.weather;
 
   const debug = false;
@@ -34,7 +34,7 @@ export default function IslandArea(props) {
           </div>
           <div className="FreeArea" key="div4" style={{zIndex:'40', pointerEvents:'none'}} >
             {island.penguins && island.penguins.map(penguin =><Penguin key={penguin.key} showBalloons={showBalloons} penguinObj={penguin}  
-          illuminatedKey={illuminatedKey} movedPenguins={movedPenguins} tileSize={tileSize} moveSpeed={moveSpeed}/>)} 
+          illuminatedKey={illuminatedKey} dempedPenguins={dempedPenguins} tileSize={tileSize} moveSpeed={moveSpeed}/>)} 
           </div>
           <div className="GemArea" key="div7" style={{zIndex:'32', pointerEvents:'none'}} >
             {island.gems && island.gems.map(gem =><Gem key={gem.key} gemVpos={gem.vpos} gemHpos={gem.hpos} gemAge={gem.age} gemHasShowel={gem.hasShowel} tileSize={tileSize} />)} 

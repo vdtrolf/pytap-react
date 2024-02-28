@@ -1,28 +1,7 @@
 import {
-    DIRECTION_NONE,
     ACTIVITY_BUILDING, ACTIVITY_MOVING, ACTIVITY_CLEANING, ACTIVITY_FISHING, ACTIVITY_GETING, ACTIVITY_NONE, ACTIVITY_EATING,
     MOVES, ACTIVITY_NAMES, DIRECTION_NAMES, COMMAND_NONE, COMMAND_EATING
 } from "./constants";
-
-
- //Returns a direction based on an order - in the form of vpos/hpos coords//
-export const getDirection = (commandDirection, activity) => {
-   
-    console.log(">>>>>>>>>>>>>>>>> COMMAND  => " + commandDirection)
-    console.log(">>>>>>>>>>>>>>>>> ACTIVITY => " + activity)
-
-    if (commandDirection !== DIRECTION_NONE) {
-        const move = MOVES[commandDirection]
-        return {
-            'activity': activity,
-            'activityName': ACTIVITY_NAMES[activity],
-            'directionNum': commandDirection,
-            'vmove': move[0],
-            'hmove': move[1],
-            'directionName': DIRECTION_NAMES[commandDirection]
-        }
-    } 
-}
 
 export const findItem = (vpos, hpos, items) => {
     // //
@@ -37,53 +16,48 @@ export const findItem = (vpos, hpos, items) => {
 
 export const interpretCommands = (commandType, commandDirection, vpos, hpos, cellsPos, fishesPos, gemsPos, garbagesPos) => {
 
-
-    // console.log("============ GARBAGESPOS IN INTERPRETER >>>> ")
-    // console.dir(garbagesPos)
-    // console.log("============ GARBAGESPOS IN INTERPRETER >>>> ")
+    // console.log("============ FISHESPOS IN INTERPRETER >>>> ")
+    // console.dir(fishesPos)
+    // console.log("============ FISHESPOS IN INTERPRETER >>>> ")
     
-
     //returns the given activity as a CONSTANT value//
 
+    let activity = ACTIVITY_NONE
+    let activityName = ACTIVITY_NAMES[ACTIVITY_NONE]
+    let move = MOVES[commandDirection]
+
     if (commandType && commandType !== COMMAND_NONE) {
+
         if (commandType === COMMAND_EATING) {
-            return {
-                'activity': ACTIVITY_EATING,
-                'activityName': ACTIVITY_NAMES[ACTIVITY_EATING],
-                'vmove': 0,
-                'hmove': 0,
-                'directionName': '',
-                'directionNum': DIRECTION_NONE
-            }
+            activity = ACTIVITY_EATING
+            activityName = ACTIVITY_NAMES[ACTIVITY_EATING]
         } else {
-            const direction = getDirection(commandDirection, ACTIVITY_MOVING)
+            const move = MOVES[commandDirection]
 
-            if (fishesPos[(vpos + direction.vmove) * 100 + hpos + direction.hmove]) {
-                direction.activity = ACTIVITY_FISHING
-                direction.activityName = ACTIVITY_NAMES[ACTIVITY_FISHING]
-            } else if (gemsPos[(vpos + direction.vmove) * 100 + hpos + direction.hmove]) {
-                direction.activity = ACTIVITY_GETING
-                direction.activityName = ACTIVITY_NAMES[ACTIVITY_GETING]
-            } else if (garbagesPos[(vpos + direction.vmove) * 100 + hpos + direction.hmove]) {
-                direction.activity = ACTIVITY_CLEANING
-                direction.activityName = ACTIVITY_NAMES[ACTIVITY_CLEANING]
-            } else if (cellsPos[(vpos + direction.vmove) * 100 + hpos + direction.hmove].type === 0) {
-                direction.activity = ACTIVITY_BUILDING
-                direction.activityName = ACTIVITY_NAMES[ACTIVITY_BUILDING]
+            if (fishesPos[(vpos + move[0]) * 100 + hpos + move[1].hmove]) {
+                activity = ACTIVITY_FISHING
+                activityName = ACTIVITY_NAMES[ACTIVITY_FISHING]
+            } else if (gemsPos[(vpos + move[0]) * 100 + hpos + move[1]]) {
+                activity = ACTIVITY_GETING
+                activityName = ACTIVITY_NAMES[ACTIVITY_GETING]
+            } else if (garbagesPos[(vpos + move[0]) * 100 + hpos + move[1]]) {
+                activity = ACTIVITY_CLEANING
+                activityName = ACTIVITY_NAMES[ACTIVITY_CLEANING]
+            } else if (cellsPos[(vpos + move[0]) * 100 + hpos + move[1]].type === 0) {
+                activity = ACTIVITY_BUILDING
+                activityName = ACTIVITY_NAMES[ACTIVITY_BUILDING]
+            } else if (cellsPos[(vpos + move[0]) * 100 + hpos + move[1]].type > 0) {
+                activity = ACTIVITY_MOVING
+                activityName = ACTIVITY_NAMES[ACTIVITY_MOVING]
             }
-
-            console.dir(direction)
-
-            return direction
         }
-
     } 
     return {
-        'activity': ACTIVITY_NONE,
-        'activityName': '',
-        'vmove': 0,
-        'hmove': 0,
-        'directionName': '',
-        'directionNum': DIRECTION_NONE
+        'activity': activity,
+        'activityName': activityName,
+        'directionNum': commandDirection,
+        'vmove': move[0],
+        'hmove': move[1],
+        'directionName': DIRECTION_NAMES[commandDirection]
     }
 }
