@@ -1,6 +1,5 @@
 import React, {useState,useEffect} from "react";
 
-// import ice_0 from "./images/ice-block-0.png";
 import ice_1 from "./images/ice-block-1.png";
 import ice_2 from "./images/ice-block-2.png";
 import ice_3 from "./images/ice-block-3.png";
