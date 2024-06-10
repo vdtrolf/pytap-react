@@ -1,8 +1,7 @@
 // External dependencies
 import { randomDirection } from "../utils/helpers";
-import { interpretCommands } from "../utils/interpreter";
 
-import { ACTIVITY_DEAD, ACTIVITY_FLEE, ACTIVITY_BUILDING, ACTIVITY_EATING, ACTIVITY_NONE, ACTIVITY_MOVING, ACTIVITY_CLEANING, ACTIVITY_FISHING, ACTIVITY_GETING, ACTIVITY_LOVING, DIRECTION_NONE, ACTIVITY_NAMES, COMMAND_NONE } from "../utils/constants";
+import { ACTIVITY_DEAD, ACTIVITY_FLEE, ACTIVITY_BUILDING, ACTIVITY_EATING, ACTIVITY_NONE, ACTIVITY_MOVING, ACTIVITY_CLEANING, ACTIVITY_FISHING, ACTIVITY_GETING, ACTIVITY_LOVING, DIRECTION_NONE, ACTIVITY_NAMES, DIRECTION_DOWN, DIRECTION_UP,DIRECTION_LEFT,DIRECTION_RIGHT } from "../utils/constants";
 
 // Class Implementation
 export default class Penguin {
@@ -214,136 +213,99 @@ export default class Penguin {
     
     }
     
-    // // Receives an order to move or perform an activity
-    // receiveCommands = (commands) => {
+    executeCommand = async (vpos, hpos, cellsPos, penguinsPos, fishesPos, gemsPos, garbagesPos) => {
+    
+        const deepDebug = true
 
-    //     // console.log("================= COMMANDS ===>" )
-    //     // console.dir(commands)
-    //     // console.log("================= COMMANDS ===>" )
+        let direction = DIRECTION_NONE
 
-    //     commands.forEach(command => {
-    //         if (command.length > 0) {
-    //             this.commands.push(command)
-    //         }
-    //     });
-    // }
-    
-    
-    executeCommand = async (commandType, commandDirection, cellsPos, size, penguinsPos, newpenguins, fishesPos, gemsPos, garbagesPos) => {
-    
-        const deepDebug = false
-        // console.log("================= GARBAGESPOS =============")
-        // console.dir(garbagesPos)
-        // console.log("================= GARBAGESPOS =============")
-
-        // Is there an order to execute
-        if (commandType !== COMMAND_NONE) {
-            const command = interpretCommands(commandType, commandDirection, this.vpos, this.hpos, cellsPos, fishesPos, gemsPos, garbagesPos)
-    
-            if (deepDebug) {
-                console.log("================= COMMAND =============")
-                console.dir(command)
-                console.log("================= COMMAND =============")
-            }
-    
-            const direction = { 'vpos': this.vpos + command['vmove'], 'hpos': this.hpos + command['hmove'] }
-            const coord = direction.vpos * 100 + direction.hpos
-            if (command.activity === ACTIVITY_MOVING) {
-                if (direction.vpos > 0 && direction.vpos < size && direction.hpos > 0 && direction.hpos < size && !penguinsPos[coord] && !newpenguins[coord]) {
-                    this.vpos = direction.vpos
-                    this.hpos = direction.hpos
-                    this.activity = command.activity
-                    this.activityDirection = command['directionNum']
-                    this.activityTime = 1
-                }
-            } else if (command.activity === ACTIVITY_FISHING) {
-                if (fishesPos[coord]) {
-                    fishesPos[coord].onHook = true
-                    this.activityTime = 3
-                    this.activity = command.activity
-                    this.activityTarget = coord
-                    this.activityDirection = command['directionNum']
-                    this.activityText = "Going to fish"
-                    console.log("there is a fish")
-                } else {
-                    this.activity = ACTIVITY_NONE
-                    this.activityDirection = DIRECTION_NONE
-                }
-            } else if (command.activity === ACTIVITY_LOVING && !this.isChild && !this.isOld) {
-                if (penguinsPos[coord] && !penguinsPos[coord].isChild && !penguinsPos[coord].isOld) {
-                    // # if penguins[coord].activity === ACTIVITY_NONE && penguins[coord].gender != this.gender && penguins[coord].age > 4 :
-                    penguinsPos[coord].activity_time = 3
-                    penguinsPos[coord].love_time = 10
-                    penguinsPos[coord].can_love = false
-                    penguinsPos[coord].activity = command.activity
-                    this.loveTime = 10
-                    this.canLove = false
-                    this.inLove = true
-                    this.activityTime = 3
-                    this.activity = command.activity
-                    this.activityTarget = coord
-                    this.activityDirection = command['directionNum']
-                } else {
-                    this.activity = ACTIVITY_NONE
-                    this.activityDirection = DIRECTION_NONE
-                }
-            } else if (command.activity === ACTIVITY_GETING && !this.isChild && !this.isOld) {
-                if (gemsPos[coord]) {
-    
-                    this.activityTime = 3
-                    this.activity = command.activity
-                    this.activityTarget = coord
-                    this.activityDirection = command['directionNum']
-                    this.activityText = "Going to grab some ice "
-                    console.log("There is a gem")
-                } else {
-                    this.activity = ACTIVITY_NONE
-                    this.activityDirection = DIRECTION_NONE
-                }
-            } else if (command.activity === ACTIVITY_CLEANING && !this.isChild && !this.isOld && this.hasShowel) {
-                if (garbagesPos[coord]) {
-                    this.activityTime = 2
-                    this.activity = command.activity
-                    this.activityTarget = coord
-                    this.activityDirection = command['directionNum']
-                    this.activityText = "Going to clean"  
-                    console.log("There is a garbage")  
-                } else {
-                    this.activity = ACTIVITY_NONE
-                    this.activityDirection = DIRECTION_NONE
-                }
-            } else if (command.activity === ACTIVITY_EATING) {
-                if (this.hasFish) {
-                    this.activityTime = 2
-                    this.activity = command.activity
-                    this.activityDirection = command['directionNum']
-                    this.activityText = "Going to eat "
-                } else {
-                    this.activity = ACTIVITY_NONE
-                    this.activityDirection = DIRECTION_NONE
-                }
-            } else if (command.activity === ACTIVITY_BUILDING && !this.isChild && !this.isOld) {
-                if (this.hasGem && cellsPos[direction.vpos * 100 + direction.hpos].type === 0) {
-                    this.activityTime = 3
-                    this.activityVPos = direction.vpos
-                    this.activityHPos = direction.hpos
-                    cellsPos[this.activityVPos * 100 + this.activityHPos].type = 4
-                    cellsPos[this.activityVPos * 100 + this.activityHPos].beingBuilt = true
-                    this.activity = command.activity
-                    this.activityDirection = command['directionNum']
-                    this.activityText = "Going to build"
-                    console.log("Let's build ")
-                } else {
-                    this.activity = ACTIVITY_NONE
-                    this.activityDirection = DIRECTION_NONE
-                }
+        if (vpos < this.vpos) {
+            direction = DIRECTION_UP
+        } else if (vpos > this.vpos) {
+            direction = DIRECTION_DOWN
+        } else {
+            if (hpos < this.hpos) {
+                direction = DIRECTION_LEFT
             } else {
-                this.activity = ACTIVITY_NONE
-                this.activityDirection = DIRECTION_NONE
+                direction = DIRECTION_RIGHT
             }
-    
-            this.activityText = ACTIVITY_NAMES[this.activity]
-            this.commands = []
         }
+
+        const coord = vpos * 100 + hpos
+
+        if (deepDebug) {
+            console.log("================= COMMAND =============" + vpos + " " + hpos + " " + coord + " " + direction)
+            console.dir(fishesPos)
+            console.log("================= COMMAND =============")
+        }
+
+
+        if (fishesPos[coord] && ! fishesPos[coord].onHook) {                
+            fishesPos[coord].onHook = true
+            this.activityTime = 3
+            this.activity = ACTIVITY_FISHING
+            this.activityTarget = coord
+            this.activityDirection = direction
+            console.log("there is a fish")
+        } else if ( gemsPos[coord]) {
+            this.activityTime = 3
+            this.activity = ACTIVITY_GETING
+            this.activityTarget = coord
+            this.activityDirection = direction
+            console.log("There is a gem")               
+        } else if (garbagesPos[coord] && !this.isChild && !this.isOld && this.hasShowel) {
+            this.activityTime = 2
+            this.activity = ACTIVITY_CLEANING
+            this.activityTarget = coord
+            this.activityDirection = direction 
+            console.log("There is a garbage")  
+        } else if (cellsPos[coord].isSea() && this.hasGem && !this.isChild && !this.isOld) {
+            this.activityTime = 3
+            this.activityVPos = vpos
+            this.activityHPos = hpos
+            cellsPos[this.activityVPos * 100 + this.activityHPos].type = 4
+            cellsPos[this.activityVPos * 100 + this.activityHPos].beingBuilt = true
+            this.activity = ACTIVITY_BUILDING
+            this.activityDirection = direction
+            console.log("Let's build ")
+        } else if (penguinsPos[coord] && !this.isChild && !this.isOld && !penguinsPos[coord].isChild && !penguinsPos[coord].isOld) {
+            penguinsPos[coord].activityTime = 3
+            penguinsPos[coord].loveTime = 10
+            penguinsPos[coord].canLove = false
+            penguinsPos[coord].inLove = true
+            penguinsPos[coord].activity = ACTIVITY_LOVING
+            this.loveTime = 10
+            this.canLove = false
+            this.inLove = true
+            this.activityTime = 3
+            this.activity = ACTIVITY_LOVING
+            this.activityTarget = coord
+            this.activityDirection = direction
+        } else if (cellsPos[coord].isGround() ) { // && ! penguinsPos[coord]) {
+            this.vpos = vpos
+            this.hpos = hpos
+            this.activity = ACTIVITY_MOVING
+            this.activityDirection = direction
+            this.activityTime = 1
+            console.log("Let's move ")
+        } else {
+            this.activity = ACTIVITY_NONE
+            this.activityDirection = DIRECTION_NONE
+        }
+
+        this.activityText = ACTIVITY_NAMES[this.activity]
+            
+    }
+
+    eat = async() =>{
+
+        console.log("Helleuh")
+      
+        if (this.hasFish) {
+            this.activityTime = 2
+            this.activity = ACTIVITY_EATING
+            this.activityDirection = DIRECTION_NONE
+            this.activityText = "Going to eat "
+        } 
     }
 }

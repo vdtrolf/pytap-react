@@ -102,13 +102,11 @@ export default class Island {
         return gemsPos
     }
     
-    transmitCommands = (penguin, commandType, commandDirection) => {
+    transmitCommands = (penguin, vpos, hpos) => {
           
-        penguin.executeCommand( commandType, 
-            commandDirection,
+        penguin.executeCommand( vpos, 
+            hpos,
             this.#populateCells(),
-            this.size, 
-            this.#populatePenguins(),
             this.#populatePenguins(), 
             this.#populateFishes(), 
             this.#populateGems(), 
@@ -116,7 +114,12 @@ export default class Island {
 
         return this
     }
-       
+
+    transmitEatCommand = (penguin) => {      
+        penguin.eat()
+        return this
+    }
+
     becomeOlder = () => {
     
         const deepDebug = false

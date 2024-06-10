@@ -19,7 +19,7 @@ import Garbage from "./data/garbage"
 import Penguin from "./data/penguin"
 
 import * as constants from "./Constants.jsx";
-import { COMMAND_BUILDING, COMMAND_CLEANING, COMMAND_EATING, COMMAND_FISHING, COMMAND_GETING, COMMAND_LOVING, COMMAND_MOVING, COMMAND_NONE, DIRECTION_DOWN, DIRECTION_LEFT, DIRECTION_NONE, DIRECTION_RIGHT, DIRECTION_UP } from "./utils/constants.js";
+import {  COMMAND_EATING,  DIRECTION_NONE } from "./utils/constants.js";
 
 export default function App() {
 
@@ -192,95 +192,29 @@ export default function App() {
 
   const handleTileClick = (vpos,hpos) => {
 
-    // console.log("TILE CLICKED AT " + vpos + "/" + hpos);
+    const aPenguin = island.penguins.find(penguin => penguin.vpos === vpos && penguin.hpos === hpos);
+    console.log("TILE CLICKED AT " + vpos + "/" + hpos + " " + selectedKey + " " + aPenguin);
 
     if (selectedKey > 0) {
-      const apenguin = island.penguins.find(penguin => penguin.vpos === vpos && penguin.hpos === hpos);
-
-      if (apenguin && apenguin.key === selectedKey) {
-        setSelectedKey(0);
-        setIlluminatedKey(0);
-      } else   {
-
+      if (aPenguin) { 
+        if (aPenguin.key === selectedKey) {
+          setSelectedKey(0);
+          setIlluminatedKey(0);
+        } else {
+          setSelectedKey(aPenguin.key);
+          setIlluminatedKey(aPenguin.key);
+        }
+      } else  {
         const selectedPenguin = island.penguins.find(penguin => penguin.key === selectedKey );
-
-        if ( selectedPenguin && ! dempedPenguins.includes(selectedPenguin.key)) {
-
-          const afish = island.fishes.find(fish => fish.vpos === vpos && fish.hpos === hpos);
-          const targetPenguin = island.penguins.find(penguin => penguin.vpos === vpos && penguin.hpos === hpos);
-          const agem = island.gems.find(gem => gem.vpos === vpos && gem.hpos === hpos);
-          const agarbage = island.garbages.find(garbage => garbage.vpos === vpos && garbage.hpos === hpos);
-          const acell = island.cells.find(cell => cell.vpos === vpos && cell.hpos === hpos);
-
-          console.log("on " + vpos + "/" + hpos + ", seledcted = " + selectedPenguin.vpos + "/" + selectedPenguin.hpos )
-          console.dir(island.fishes)
-
-
-          if (selectedPenguin && selectedPenguin.activity === constants.ACTIVITY_NONE &&
-              ((Math.abs(vpos - selectedPenguin.vpos) === 1 && hpos === selectedPenguin.hpos) || 
-              (Math.abs(hpos - selectedPenguin.hpos) === 1 && vpos === selectedPenguin.vpos))) {
-
-            let commandType = COMMAND_NONE
-            let commandDirection = DIRECTION_NONE
-
-            if (vpos < selectedPenguin.vpos) {
-              commandDirection = DIRECTION_UP
-            } else if (vpos > selectedPenguin.vpos) {
-              commandDirection = DIRECTION_DOWN
-            } else {
-              if (hpos < selectedPenguin.hpos) {
-                commandDirection = DIRECTION_LEFT
-              } else {
-                commandDirection = DIRECTION_RIGHT
-              }
-            }
-
-            if (afish && ! afish.onHook) {
-              commandType = COMMAND_FISHING
-            } else if (agem && ! agem.isTaken && ! selectedPenguin.isChild && ! selectedPenguin.isOld) {
-              commandType = COMMAND_GETING
-            } else if (agarbage && ! agarbage.isTaken && selectedPenguin.hasShowel &&! selectedPenguin.isChild && ! selectedPenguin.isOld) {
-              commandType = COMMAND_CLEANING
-            } else if (targetPenguin && targetPenguin.canLove && selectedPenguin.canLove && ! selectedPenguin.isChild && ! targetPenguin.isChild && ! selectedPenguin.isOld && ! targetPenguin.isOld && targetPenguin.gender !== selectedPenguin.gender) {
-                commandType = COMMAND_LOVING
-                selectedPenguin.activityText = "Going to love"
-                console.log("there is a loved once")
-            } else if (acell.type > 0 && ! agem && ! targetPenguin) {
-              if (commandDirection === DIRECTION_LEFT) {
-                selectedPenguin.activityDirection =1;
-              } else if (commandDirection === DIRECTION_RIGHT) {
-                selectedPenguin.activityDirection =2;
-              } else if (commandDirection === DIRECTION_UP) {
-                selectedPenguin.activityDirection =3;
-              } else if (commandDirection === DIRECTION_DOWN) {
-                selectedPenguin.activityDirection =4;
-              }
-              commandType = COMMAND_MOVING
-              selectedPenguin.activityText = "Going to move" 
-            } else if (acell.type === 0 && selectedPenguin.hasGem && ! selectedPenguin.isChild && ! selectedPenguin.isOld) {
-              commandType = COMMAND_BUILDING
-              
-            } 
-
-            if (commandType !== COMMAND_NONE) {
-              setIsland(island.transmitCommands(selectedPenguin,commandType,commandDirection))
-              setMovedPenguins([])
-            }  
-
-          } else {
-            if (targetPenguin && targetPenguin.alive) {
-              setSelectedKey(targetPenguin.key);
-              setIlluminatedKey(targetPenguin.key);
-            }
-          }
+        if (selectedPenguin && ((Math.abs(vpos - selectedPenguin.vpos) === 1 && hpos === selectedPenguin.hpos) 
+               || (Math.abs(hpos - selectedPenguin.hpos) === 1 && vpos === selectedPenguin.vpos))) {
+          setIsland(island.transmitCommands(selectedPenguin,vpos,hpos))
+         setMovedPenguins([])
         }
       }
-    } else {
-      const apenguin = island.penguins.find(penguin => penguin.vpos === vpos && penguin.hpos === hpos);
-      if (apenguin && apenguin.alive) {
-        setSelectedKey(apenguin.key);
-        setIlluminatedKey(apenguin.key);
-      }
+    } else if (aPenguin) {
+      setSelectedKey(aPenguin.key);
+      setIlluminatedKey(aPenguin.key);      
     }
   } 
 
@@ -289,7 +223,7 @@ export default function App() {
    
     const selectedPenguin = island.penguins.find(penguin => penguin.key === selectedKey );
 
-    setIsland(island.transmitCommands(selectedPenguin,COMMAND_EATING,DIRECTION_NONE))
+    setIsland(island.transmitEatCommand(selectedPenguin))
     setSelectedKey(0);
     setIlluminatedKey(0);
     setMovedPenguins([])

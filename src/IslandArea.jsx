@@ -33,7 +33,7 @@ export default function IslandArea(props) {
             {island.cells && island.cells.map(cell =><Cell key={cell.key} cellType={cell.type} cellAngle={cell.angle} cellVpos={cell.vpos} cellHpos={cell.hpos} onTileClick={onTileClick} tileSize={tileSize}/>)} 
           </div>
           <div className="FreeArea" key="div4" style={{zIndex:'40', pointerEvents:'none'}} >
-            {island.penguins && island.penguins.map(penguin =><Penguin key={penguin.key} showBalloons={showBalloons} penguinObj={penguin}  
+            {island.penguins && island.penguins.map(penguin =><Penguin key={penguin.key} showBalloons={showBalloons} penguin={penguin}  
           illuminatedKey={illuminatedKey} dempedPenguins={dempedPenguins} tileSize={tileSize} moveSpeed={moveSpeed}/>)} 
           </div>
           <div className="GemArea" key="div7" style={{zIndex:'32', pointerEvents:'none'}} >
