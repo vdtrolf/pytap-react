@@ -44,7 +44,7 @@ const Fish = (props) => {
             });
         }
 
-    },[fishObj,tileSize])    
+    },[fishObj,tileSize,moveSpeed])    
   
     return ( 
         <>

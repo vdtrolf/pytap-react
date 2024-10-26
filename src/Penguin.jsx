@@ -303,7 +303,7 @@ export default function Penguin(props) {
       });
     }
   
-  },[penguinObj,illuminatedKey,movedPenguins, tileSize])    
+  },[penguinObj,illuminatedKey,movedPenguins, tileSize,moveSpeed])    
   
   return ( 
     <>

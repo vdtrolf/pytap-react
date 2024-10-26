@@ -25,7 +25,7 @@ export default function Navbar(props) {
     useEffect(() => {
       setSpeedoImg(speedo[island.evolutionSpeed])
       setMonth(monthes[Math.floor(island.year * 4) % 4])
-    },[island.evolutionSpeed,island.year])    
+    },[island.evolutionSpeed,island.year,monthes,speedo])    
 
   return (
     <div className="Navbar">

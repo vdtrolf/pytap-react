@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React from "react";
 import WeatherArea from "./WeatherArea.jsx";
 import StateArea from "./StateArea.jsx";
 import Tile from "./Tile.jsx";

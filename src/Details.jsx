@@ -32,7 +32,7 @@ import ice from "./images/ice-block-0.png"
 
 export default function Details(props) {
 
-  const {onDetailsCloseButton,onEatButton,penguinObj} = props;
+  const {onEatButton,penguinObj} = props;
 
   const hunger = [hunger_0,hunger_1,hunger_2,hunger_3,hunger_4,hunger_5]
   const temp = [temp_0,temp_1,temp_2,temp_3,temp_4,temp_5]
