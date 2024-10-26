@@ -46,7 +46,7 @@ export default function Sidebar(props) {
     setCheckedState(new Array(islandsList.length).fill(false))
   },[islandsList.length])
 
-  if (islandsList) {
+  if (false && islandsList) {
 
     const listIslands = islandsList.map((island, index) => {  
       return (

@@ -58,9 +58,11 @@ export default function App() {
                   setRenewSpeed(2200-updatedIsland.evolutionSpeed * 200);
                   setMoveSpeed(1650-updatedIsland.evolutionSpeed * 150);
           
-                  updatedIsland.penguins.forEach(penguin => {
-                    if (penguin.key === selectedKey && ! penguin.alive) setSelectedKey(0);
-                  });
+                  if (updatedIsland.penguins) {
+                    updatedIsland.penguins.forEach(penguin => {
+                      if (penguin.key === selectedKey && ! penguin.alive) setSelectedKey(0);
+                    });
+                  }
           
                   if ( ! updatedIsland.running) {
                     setRunningState(constants.ENDED)
@@ -433,7 +435,7 @@ const extractIslandData = (islandData) => {
     islandData.cells.forEach(cellsline => {
       cellsline.forEach(cell => {   
         tiles.push({key: cell.id, 
-                  type: cell.type, 
+                  type: cell.cellType, 
                   angle: cell.angle, 
                   vpos: cell.vpos, 
                   hpos: cell.hpos})
