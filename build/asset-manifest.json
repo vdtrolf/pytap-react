@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/static/css/main.26b16f3c.css",
-    "main.js": "/static/js/main.dd714bbb.js",
-    "static/js/787.671e8438.chunk.js": "/static/js/787.671e8438.chunk.js",
+    "main.js": "/static/js/main.6e5a7667.js",
+    "static/js/488.c62f23f9.chunk.js": "/static/js/488.c62f23f9.chunk.js",
     "static/media/TTP_Startup_bg.png": "/static/media/TTP_Startup_bg.b56f7f8cfa3f7d7ef494.png",
     "static/media/peng-loving.gif": "/static/media/peng-loving.09eee8303bdc2a4e845d.gif",
     "static/media/state-endgame.png": "/static/media/state-endgame.5e9a3f763ec5e4916e17.png",
@@ -153,11 +153,11 @@
     "static/media/foreground-cold.png": "/static/media/foreground-cold.55c819d41c519842ba50.png",
     "index.html": "/index.html",
     "main.26b16f3c.css.map": "/static/css/main.26b16f3c.css.map",
-    "main.dd714bbb.js.map": "/static/js/main.dd714bbb.js.map",
-    "787.671e8438.chunk.js.map": "/static/js/787.671e8438.chunk.js.map"
+    "main.6e5a7667.js.map": "/static/js/main.6e5a7667.js.map",
+    "488.c62f23f9.chunk.js.map": "/static/js/488.c62f23f9.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.26b16f3c.css",
-    "static/js/main.dd714bbb.js"
+    "static/js/main.6e5a7667.js"
   ]
 }
